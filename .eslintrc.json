@@ -1,0 +1,58 @@
+{
+  "root": true,
+  "env": {
+    "es6": true,
+    "jest": true,
+    "node": true,
+    "jasmine": true,
+    "browser": true
+  },
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "requireConfigFile": false,
+    "ecmaVersion": 8,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "ignorePatterns": ["**/*"],
+  "plugins": ["prettier", "import", "react"],
+  "extends": [
+    "eslint:recommended",
+    "prettier",
+    "plugin:react/recommended"
+  ],
+  "rules": {
+    "react/prop-types": "off",
+    "import/no-useless-path-segments": "error",
+    "import/newline-after-import": "error",
+    "import/first": "error",
+    "no-duplicate-imports": "error",
+    "import/order": [
+      "error",
+      {
+        "newlines-between": "always",
+        "groups": [
+          "external",
+          "builtin",
+          "internal",
+          "index",
+          [
+            "sibling",
+            "parent"
+          ],
+          "object"
+        ]
+      }
+    ],
+    "import/no-cycle": "warn",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "no-case-declarations": "off"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "hyro-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -r esm src/index.js",
+    "start": "node -r esm src/index.js",
+    "lint": "eslint src",
+    "migrate-create": "migrate create",
+    "migrate-up": "migrate up --store='./src/utils/migrations/engine_esm.js' --matches '*.js'",
+    "migrate-down": "migrate down --store='./src/utils/migrations/engine_esm.js' --matches '*.js'"
+  },
+  "author": "",
+  "license": "ISC"
+}

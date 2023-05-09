@@ -1,0 +1,52 @@
+export const colors = {
+  primary: '',
+  secondary: '',
+  blue: '',
+  blueDeep: '',
+  lightBlue: '',
+  green: '',
+  yellow: '#FBF3AD',
+  yellowLight: 'rgba(251, 243, 173, 0.5)',
+  red: '#EF0000',
+  lightRed: '',
+  orange: '#F29F3B',
+  orangeLight: 'rgba(242, 159, 59, 0.1)',
+  gray: '#535353',
+  grayTransparent: 'rgba(248, 248, 248, 0.6)',
+  grayBorder: '#E3E3E3',
+  graySoft: '#F8F8F8',
+  grayLight: '#F2F2F2',
+  grayLighter: '#E9EEFF',
+  grayDark: '#DBDBDB',
+};
+
+export default {
+  colors,
+  font: {
+    tiny: '10px',
+    small: '12px',
+    medium: '14px',
+    large: '16px',
+    extraLarge: '24px',
+    insane: '28px',
+    title: '45px',
+    weight: {
+      regular: '400',
+      medium: '500',
+      bold: '700',
+    },
+  },
+  border: {
+    tiny: '2px',
+    small: '4px',
+    medium: '6px',
+    large: '10px',
+    extraLarge: '30px',
+    insane: '90px',
+  },
+  input: {
+    small: '20px',
+    medium: '30px',
+    large: '38px',
+  },
+};
