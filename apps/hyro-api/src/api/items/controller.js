@@ -25,21 +25,15 @@ async function updateById(req, res) {
 
 async function getPictures(req, res) {
   const item = await ItemsRepository.getById(req.params.itemId);
-  console.log(item);
-
   if (!item) {
     return res.status(httpStatus.NOT_FOUND).end();
   }
-
-  console.log(item);
 
   const pictures = [];
   for await (const image of item.images) {
     const path = await S3Service.S3GetPath(image.path);
     pictures.push({ ...image, path });
   }
-
-  console.log(pictures);
 
   return res.send(pictures);
 }

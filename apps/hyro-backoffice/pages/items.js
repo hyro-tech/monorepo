@@ -10,6 +10,7 @@ import { getItemsFiltered, getItemsPictures } from '../src/actions/items';
 import Actions from '../src/components/Actions/Actions';
 import theme from '../src/styles/theme';
 import ModalCreateAndModifyItem from '../src/components/Modals/ModalCreateAndModifyItem/ModalCreateAndModifyItem';
+import Pagination from '../src/components/Pagination/Pagination';
 
 const Picture = styled.img`
   width: 80px;
@@ -42,7 +43,6 @@ const Item = ({ item, i, select }) => {
 
   useMemo(() => {
     getItemsPictures(item?._id).then(({ response: pictures }) => {
-      console.log(pictures);
       setPicture(pictures[0]);
     });
   }, [item]);
@@ -76,6 +76,17 @@ const Items = () => {
     dispatch(getItemsFiltered());
   }, []);
 
+  const [page, setPage] = useState(0);
+  const perPage = 9;
+
+  const [itemsRendered, setItemsRendered] = useState([]);
+
+  useMemo(() => {
+    if (items) {
+      setItemsRendered([...items].slice(page * perPage, page * perPage + perPage));
+    }
+  }, [page, items]);
+
   return (
     <LayoutWithSidebar path={PATHS.ITEMS}>
       <Actions>
@@ -88,10 +99,11 @@ const Items = () => {
         <Col xs={2}>Couleurs</Col>
         <Col>Nom</Col>
       </Row>
-      {items &&
-        [...items]
-          .slice(0, 10)
-          ?.map((item, i) => <Item item={item} key={item._id} i={i} select={setSelectedItem} />)}
+
+      {itemsRendered?.map((item, i) => (
+        <Item item={item} key={item._id} i={i} select={setSelectedItem} />
+      ))}
+      <Pagination currentPage={page} totalPages={items?.length / perPage} onPageChange={setPage} />
 
       {selectedItem && (
         <ModalCreateAndModifyItem item={selectedItem} handleClose={() => setSelectedItem(null)} />

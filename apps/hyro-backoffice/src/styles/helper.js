@@ -9,7 +9,7 @@ export const DEFAULT_BODY_FONT_SIZE = 14;
  // Large devices (desktops, 992px and up)
  // Extra large devices (large desktops, 1200px and up)
  */
-const sizes = {
+export const deviceSizesPixels = {
   phone: 576,
   tablet: 767,
   desktop: 992,
@@ -17,11 +17,17 @@ const sizes = {
   extraLargeDesktop: 1500,
 };
 
-const deviceSizes = ['phone', 'tablet', 'desktop', 'largeDesktop', 'extraLargeDesktop'];
+export const deviceSizes = {
+  phone: 'phone',
+  tablet: 'tablet',
+  desktop: 'desktop',
+  largeDesktop: 'largeDesktop',
+  extraLargeDesktop: 'extraLargeDesktop',
+};
 
-export const deviceMedia = deviceSizes.reduce((acc, deviceSizeName) => {
+export const deviceMedia = Object.keys(deviceSizes)?.reduce((acc, deviceSizeName) => {
   acc[deviceSizeName] = (first, ...interpolations) => css`
-    @media (max-width: ${sizes[deviceSizeName] / DEFAULT_BODY_FONT_SIZE}em) {
+    @media (max-width: ${deviceSizesPixels[deviceSizeName] / DEFAULT_BODY_FONT_SIZE}em) {
       ${css(first, ...interpolations)};
     }
   `;

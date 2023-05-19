@@ -202,9 +202,7 @@ const ModalCreateAndModifyItem = ({ item, handleClose }) => {
       } else if (error === errosEnum.size_too_large) {
         alert('10 MB maximum par image');
       } else {
-        console.log(newFile);
         setPictures([...pictures, newFile]);
-        console.log(pictures);
       }
     }
   };
