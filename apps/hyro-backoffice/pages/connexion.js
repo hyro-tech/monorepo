@@ -76,7 +76,7 @@ const SignIn = () => {
         <h6>Connexion</h6>
 
         <input
-          placeholder={'bastien@exo.fr'}
+          placeholder={'cheikh.mbaye@hyroparis.com'}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
