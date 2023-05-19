@@ -58,7 +58,11 @@ const Item = ({ item }) => {
   const [picture, setPicture] = useState(null);
 
   useMemo(() => {
-    getItemsPictures(item._id).then(({ response: pictures }) => setPicture(pictures[0]));
+    getItemsPictures(item._id).then(({ response: pictures }) => {
+      if (pictures) {
+        setPicture(pictures[0]);
+      }
+    });
   }, [item]);
 
   return (

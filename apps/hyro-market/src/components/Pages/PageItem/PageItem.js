@@ -110,8 +110,10 @@ const PageItem = ({ item }) => {
   useMemo(() => {
     if (item) {
       getItemsPictures(item._id).then(({ response: pictures }) => {
-        setMainPicture(pictures[0]);
-        setOthersPictures(pictures?.slice(1, pictures?.length));
+        if (pictures) {
+          setMainPicture(pictures[0]);
+          setOthersPictures(pictures?.slice(1, pictures?.length));
+        }
       });
     }
   }, [item]);
