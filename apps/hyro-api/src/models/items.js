@@ -38,6 +38,10 @@ const ItemsSchema = new Schema(
       type: Number,
       required: false,
     },
+    commentary: {
+      type: String,
+      required: false,
+    },
     images: {
       type: [
         {

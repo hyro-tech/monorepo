@@ -227,14 +227,18 @@ const ModalCreateAndModifyItem = ({ item, handleClose }) => {
           removeNullInObject({
             title: newItem?.title,
             reference: newItem?.reference,
+            price: parseInt(newItem?.price, 10),
             rental_price: parseInt(newItem?.rental_price, 10),
+            commentary: newItem?.commentary,
             categories,
             brands,
             sizes,
             colors,
           }),
         ),
-      ).then(() => setIsLoading(false));
+      ).then(() => {
+        setIsLoading(false);
+      });
     }
   };
 
@@ -263,10 +267,26 @@ const ModalCreateAndModifyItem = ({ item, handleClose }) => {
         </div>
 
         <div style={{ marginBottom: '20px' }}>
+          <h6>Prix neuf:</h6>
+          <Input
+            value={newItem?.price}
+            onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
+          />
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
           <h6>Prix de location:</h6>
           <Input
             value={newItem?.rental_price}
             onChange={(e) => setNewItem({ ...newItem, rental_price: e.target.value })}
+          />
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <h6>Commentaire :</h6>
+          <Input
+            value={newItem?.commentary}
+            onChange={(e) => setNewItem({ ...newItem, commentary: e.target.value })}
           />
         </div>
 

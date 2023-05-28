@@ -7,6 +7,7 @@ import LayoutWithHeader from '../../../layouts/LayoutWithHeader/LayoutWithHeader
 import { translation } from '../../../../../../libs/translations';
 import { deviceMedia, deviceSizes } from '../../../styles/helper';
 import { Button } from '../../Buttons/Buttons';
+import Size from '../../Size';
 
 const Main = styled.div`
   display: flex;
@@ -14,12 +15,14 @@ const Main = styled.div`
   column-gap: 40px;
   padding: 20px;
   height: 80vh;
+  margin-top: 80px;
 
   ${deviceMedia[deviceSizes.phone]`
     padding: 0 20px;
     height: 100%;
     flex-wrap: wrap;
     justify-content: center;
+    margin-top: 0px;
   `};
 `;
 
@@ -27,7 +30,7 @@ const MainLeft = styled.div`
   width: 400px;
 
   ${deviceMedia[deviceSizes.phone]`
-    margin-top: 20px;
+    margin-top: 0px;
   `};
 `;
 
@@ -36,14 +39,18 @@ const MainRight = styled.div`
 
   h5 {
     margin: 0;
+    font-size: 30px;
   }
 
   p {
     margin: 0;
+    font-size: 18px;
   }
 
   ${deviceMedia[deviceSizes.phone]`
     text-align: center;
+    padding-bottom: 40px;
+    padding-top: 20px;
   `};
 `;
 
@@ -60,19 +67,20 @@ const ItemImageContainer = styled.div`
   img {
     height: 100%;
     max-width: 100%;
+    margin-bottom: 10px;
   }
 `;
 
 const OthersPictures = styled.div`
   display: flex;
-  gap: 20px;
-  margin-top: 10px;
+  justify-content: center;
+  gap: 10px;
   flex-wrap: wrap;
-  padding: 10px;
+  padding: 10px 0;
 
   div {
-    width: 60px;
-    height: 60px;
+    width: 100px;
+    height: 100px;
     background-color: #f3f3f5;
     display: flex;
     align-items: center;
@@ -83,6 +91,11 @@ const OthersPictures = styled.div`
   img {
     height: 100%;
   }
+
+  ${deviceMedia[deviceSizes.phone]`
+    text-align: center;
+    padding: 20px 20px 40px 20px;
+  `};
 `;
 
 const Price = styled.div`
@@ -99,6 +112,20 @@ const Price = styled.div`
     font-weight: 700;
     font-size: 18px;
   }
+
+  ${deviceMedia[deviceSizes.phone]`
+    justify-content: center;
+  `};
+`;
+
+const Infos = styled.div`
+  text-align: start;
+`;
+
+const SizesContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 `;
 
 const PageItem = ({ item }) => {
@@ -119,7 +146,7 @@ const PageItem = ({ item }) => {
   }, [item]);
 
   return (
-    <LayoutWithHeader>
+    <LayoutWithHeader withDressing={false} withBackLink={true}>
       <Main>
         <MainLeft>
           <ItemImageContainer>
@@ -145,18 +172,40 @@ const PageItem = ({ item }) => {
           <h5>{translation(`brands.${item?.brands[0]}`)}</h5>
           <p>{item?.title}</p>
           <Price>
-            <span>{item?.price} €</span>
             <p>{item?.rental_price} €</p>
           </Price>
 
-          <div style={{ marginTop: '20px' }}>
-            <p>Tailles disponibles:</p>
-            {item?.sizes?.map((size) => translation(`sizes.${size}`)).join(' - ')}
-          </div>
-          <div style={{ marginTop: '20px' }}>
-            <p>Couleurs disponibles:</p>
-            {item?.colors?.map((color) => translation(`colors.${color}`))?.join(' - ')}
-          </div>
+          <Infos>
+            {item?.commentary && (
+              <div style={{ marginTop: '20px' }}>
+                <span>{item?.commentary}</span>
+              </div>
+            )}
+            <div style={{ marginTop: '20px' }}>
+              <p>Prix neuf :</p>
+              <span>{item?.price || 'n/a'} €</span>
+            </div>
+            <div style={{ marginTop: '20px' }}>
+              <p>Prix de location :</p>
+              <span>{item?.rental_price} €</span>
+            </div>
+            <div style={{ marginTop: '20px' }}>
+              <p>Tailles disponibles:</p>
+              <SizesContainer>
+                {item?.sizes?.map((size) => (
+                  <Size key={size} selected>
+                    {translation(`sizes.${size}`)}
+                  </Size>
+                ))}
+              </SizesContainer>
+            </div>
+            {item?.colors?.length > 0 && (
+              <div style={{ marginTop: '20px' }}>
+                <p>Couleurs disponibles:</p>
+                {item?.colors?.map((color) => translation(`colors.${color}`))?.join(' - ')}
+              </div>
+            )}
+          </Infos>
 
           <div style={{ marginTop: '40px' }}>
             <p>{item?.description}</p>
@@ -167,7 +216,9 @@ const PageItem = ({ item }) => {
               target={'_blank'}
               rel="noreferrer"
             >
-              <Button>Louer</Button>
+              <Button>
+                Louer maintenant <img src={'/whatsapp.png'} alt={'whatsapp'} />
+              </Button>
             </a>
           </div>
         </MainRight>

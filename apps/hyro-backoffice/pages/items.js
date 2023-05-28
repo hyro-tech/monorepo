@@ -72,6 +72,8 @@ const Items = () => {
 
   const [selectedItem, setSelectedItem] = useState(null);
 
+  const [search, setSearch] = useState('');
+
   useEffect(() => {
     dispatch(getItemsFiltered());
   }, []);
@@ -87,9 +89,33 @@ const Items = () => {
     }
   }, [page, items]);
 
+  useMemo(() => {
+    if (search) {
+      setItemsRendered(
+        items.filter((item) => item.reference?.toLowerCase()?.includes(search?.toLowerCase())),
+      );
+    } else if (items) {
+      setItemsRendered([...items].slice(page * perPage, page * perPage + perPage));
+    }
+  }, [search]);
+
   return (
     <LayoutWithSidebar path={PATHS.ITEMS}>
       <Actions>
+        <div style={{ display: 'flex', alignItems: 'center', marginRight: 'auto', gap: '20px' }}>
+          <span>Référence:</span>
+          <input
+            style={{
+              border: `1px solid black`,
+              borderRadius: '35px',
+              padding: '6px 20px',
+              outline: 'none',
+            }}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
         <button onClick={() => setSelectedItem({})}>Ajouter</button>
       </Actions>
 
@@ -103,7 +129,14 @@ const Items = () => {
       {itemsRendered?.map((item, i) => (
         <Item item={item} key={item._id} i={i} select={setSelectedItem} />
       ))}
-      <Pagination currentPage={page} totalPages={items?.length / perPage} onPageChange={setPage} />
+
+      {!search && (
+        <Pagination
+          currentPage={page}
+          totalPages={items?.length / perPage}
+          onPageChange={setPage}
+        />
+      )}
 
       {selectedItem && (
         <ModalCreateAndModifyItem item={selectedItem} handleClose={() => setSelectedItem(null)} />

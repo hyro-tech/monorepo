@@ -17,12 +17,13 @@ const PaginationWrapper = styled.div`
 `;
 
 const PageButton = styled.button`
-  border: 1px solid ${(props) => (props.active ? 'black' : theme.colors.grayBorder)};
-  border-radius: 50%;
+  border: 1px solid ${theme.colors.grayBorder};
+  color: ${theme.colors.gray};
+  background-color: ${(props) => (props.active ? theme.colors.grayBorder : 'transparent')};
+  border-radius: 5px;
   width: 40px;
   height: 40px;
   font-size: 16px;
-  background: none;
   cursor: pointer;
   margin: 0 5px;
 `;
@@ -31,14 +32,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const showPages = [currentPage - 1, currentPage, currentPage + 1].filter(
     (pageNumber) => pageNumber >= 0 && pageNumber < totalPages,
   );
-
-  const goToFirstPage = () => {
-    onPageChange(0);
-  };
-
-  const goToLastPage = () => {
-    onPageChange(totalPages - 1);
-  };
 
   const goToPreviousPage = () => {
     if (currentPage > 0) {
@@ -52,21 +45,39 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     }
   };
 
+  const goToFirstPage = () => {
+    if (currentPage !== 0) {
+      onPageChange(0);
+    }
+  };
+
+  const goToLastPage = () => {
+    if (currentPage !== totalPages - 1) {
+      onPageChange(totalPages - 1);
+    }
+  };
+
   return (
     <PaginationWrapper>
-      <PageButton onClick={goToFirstPage}>&lt;&lt;</PageButton>
-      <PageButton onClick={goToPreviousPage}>&lt;</PageButton>
+      <PageButton onClick={goToPreviousPage} style={{ marginRight: '10px' }}>
+        &lt;
+      </PageButton>
+      {currentPage > 1 && <PageButton onClick={goToFirstPage}>1</PageButton>}
       {showPages.map((pageNumber) => (
         <PageButton
           key={pageNumber}
           active={pageNumber === currentPage}
           onClick={() => onPageChange(pageNumber)}
         >
-          {pageNumber + 1}
+          {Math.floor(pageNumber + 1)}
         </PageButton>
       ))}
-      <PageButton onClick={goToNextPage}>&gt;</PageButton>
-      <PageButton onClick={goToLastPage}>&gt;&gt;</PageButton>
+      {currentPage + 1 < totalPages - 1 && (
+        <PageButton onClick={goToLastPage}>{Math.floor(totalPages)}</PageButton>
+      )}
+      <PageButton onClick={goToNextPage} style={{ marginLeft: '10px' }}>
+        &gt;
+      </PageButton>
     </PaginationWrapper>
   );
 };

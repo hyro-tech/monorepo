@@ -12,7 +12,7 @@ export const colors = {
   lightRed: '',
   orange: '#F29F3B',
   orangeLight: 'rgba(242, 159, 59, 0.1)',
-  gray: '#535353',
+  gray: '#7E7E7E',
   grayBorder: '#E3E3E3',
   graySoft: '#F8F8F8',
   grayLight: '#F2F2F2',

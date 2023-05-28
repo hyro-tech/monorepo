@@ -31,7 +31,7 @@ async function getById(itemId) {
 async function updateById(itemId, changes) {
   const ItemsModel = getItemsModel();
 
-  return ItemsModel.findOneAndUpdate({ _id: itemId }, changes).lean();
+  return ItemsModel.findOneAndUpdate({ _id: itemId }, changes, { new: true }).lean();
 }
 
 export const ItemsRepository = {

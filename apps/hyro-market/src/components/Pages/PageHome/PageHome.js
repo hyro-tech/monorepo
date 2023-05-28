@@ -1,7 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
-import { brandsType, categoriesType, colorsType, sizesType } from 'lib-enums';
+import {
+  brandsType,
+  categoriesType,
+  colorsType,
+  sizesOutfitsType,
+  sizesShoesType,
+  sizesType,
+} from 'lib-enums';
+import { useRouter } from 'next/router';
 
 import { deviceMedia, deviceSizes } from '../../../styles/helper';
 import Item from './Item/Item';
@@ -10,6 +18,8 @@ import { translation } from '../../../../../../libs/translations';
 import Dropdown from '../../Dropdown/Dropdown';
 import Pagination from '../../Pagination/Pagination';
 import LayoutWithHeader from '../../../layouts/LayoutWithHeader/LayoutWithHeader';
+import Size from '../../Size';
+import { Button } from '../../Buttons/Buttons';
 
 const ContentContainer = styled.div`
   display: flex;
@@ -67,9 +77,10 @@ const StyledPin = styled.div`
 const Filters = styled.div`
   width: 25%;
   min-width: 300px;
+  padding: 0 20px;
 
   ${deviceMedia[deviceSizes.phone]`
-    width: 300px;
+    display: none;
   `};
 `;
 
@@ -94,16 +105,29 @@ const Pin = ({ content, onClose }) => {
   );
 };
 
-const PageHome = () => {
-  const [categories, setCategories] = useState([]);
-  const [brands, setBrands] = useState([]);
-  const [sizes, setSizes] = useState([]);
-  const [colors, setColors] = useState([]);
+const SizesContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+`;
+
+const PageHome = ({
+  initialCategories = [],
+  initialBrands = [],
+  initialSizes = [],
+  initialColors = [],
+}) => {
+  const router = useRouter();
 
   const items = useSelector((state) => state.items);
 
+  const [categories, setCategories] = useState(initialCategories);
+  const [brands, setBrands] = useState(initialBrands);
+  const [sizes, setSizes] = useState(initialSizes);
+  const [colors, setColors] = useState(initialColors);
+
   const [page, setPage] = useState(0);
-  const perPage = 9;
+  const perPage = 12;
   const [itemsFiltered, setItemsFiltered] = useState([]);
   const [itemsRendered, setItemsRendered] = useState([]);
 
@@ -128,6 +152,8 @@ const PageHome = () => {
       );
     }
 
+    console.log({ sizes });
+
     setPage(0);
   }, [categories, brands, sizes, colors]);
 
@@ -139,6 +165,16 @@ const PageHome = () => {
     <LayoutWithHeader>
       <ContentContainer>
         <Filters>
+          <Button
+            color={'black'}
+            bgColor={'white'}
+            style={{ marginLeft: 'auto', marginBottom: '30px' }}
+            onClick={() => {
+              router.replace('/');
+            }}
+          >
+            Effacer les filtres
+          </Button>
           <Filter>
             <Dropdown value={'Catégories'}>
               {Object.keys(categoriesType)
@@ -154,7 +190,9 @@ const PageHome = () => {
                 <Pin
                   key={category}
                   content={translation(`categories.${category}`)}
-                  onClose={() => setCategories((ca) => ca.filter((c) => c !== category))}
+                  onClose={() => {
+                    setCategories(categories?.filter((c) => c !== category));
+                  }}
                 />
               ))}
             </PinsContainer>
@@ -165,7 +203,12 @@ const PageHome = () => {
               {Object.keys(brandsType)
                 .filter((c) => !brands?.includes(c))
                 .map((brand) => (
-                  <p key={brand} onClick={() => setBrands([...brands, brand])}>
+                  <p
+                    key={brand}
+                    onClick={() => {
+                      setBrands([...brands, brand]);
+                    }}
+                  >
                     {translation(`brands.${brand}`)}
                   </p>
                 ))}
@@ -175,31 +218,54 @@ const PageHome = () => {
                 <Pin
                   key={brand}
                   content={translation(`brands.${brand}`)}
-                  onClose={() => setBrands((ca) => ca.filter((c) => c !== brand))}
+                  onClose={() => {
+                    setBrands(brands?.filter((c) => c !== brand));
+                  }}
                 />
               ))}
             </PinsContainer>
           </Filter>
 
           <Filter>
-            <Dropdown value={'Tailles'}>
-              {Object.keys(sizesType)
-                .filter((c) => !sizes?.includes(c))
-                .map((size) => (
-                  <p key={size} onClick={() => setSizes([...sizes, size])}>
-                    {translation(`sizes.${size}`)}
-                  </p>
-                ))}
-            </Dropdown>
-            <PinsContainer>
-              {sizes.map((size) => (
-                <Pin
+            <p style={{ marginBottom: '0' }}>Tailles :</p>
+            <SizesContainer>
+              {Object.keys(sizesOutfitsType).map((size) => (
+                <Size
                   key={size}
-                  content={translation(`sizes.${size}`)}
-                  onClose={() => setSizes((ca) => ca.filter((c) => c !== size))}
-                />
+                  onClick={() => {
+                    setSizes(
+                      sizes?.find((s) => s === size)
+                        ? sizes?.filter((s) => s !== size)
+                        : [...sizes, size],
+                    );
+                  }}
+                  selected={sizes?.find((s) => s === size)}
+                >
+                  {translation(`sizes.${size}`)}
+                </Size>
               ))}
-            </PinsContainer>
+            </SizesContainer>
+          </Filter>
+
+          <Filter>
+            <p style={{ marginBottom: '0' }}>Pointures :</p>
+            <SizesContainer>
+              {Object.keys(sizesShoesType).map((size) => (
+                <Size
+                  key={size}
+                  onClick={() =>
+                    setSizes(
+                      sizes?.find((s) => s === size)
+                        ? sizes?.filter((s) => s !== size)
+                        : [...sizes, size],
+                    )
+                  }
+                  selected={sizes?.find((s) => s === size)}
+                >
+                  {translation(`sizes.${size}`)}
+                </Size>
+              ))}
+            </SizesContainer>
           </Filter>
 
           <Filter>

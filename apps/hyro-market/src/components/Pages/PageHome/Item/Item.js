@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { getItemsPictures } from '../../../../actions/items';
 import { translation } from '../../../../../../../libs/translations';
+import { deviceMedia, deviceSizes } from '../../../../styles/helper';
 
 const StyledItem = styled.div`
   font-family: Montserrat, sans-serif;
@@ -14,13 +15,31 @@ const StyledItem = styled.div`
 
   h5 {
     margin: 0;
+    font-size: 20px;
   }
 
   p {
     margin: 0;
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 300;
   }
+
+  ${deviceMedia[deviceSizes.phone]`
+    max-width: 140px;
+    
+    h5 {
+      margin-top: 5px;
+      font-size: 16px;
+    }
+    
+    p {
+      font-size: 12px;
+      line-height: 16px;  
+      height: 32px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  `};
 `;
 
 const ItemImageContainer = styled.div`
@@ -36,6 +55,12 @@ const ItemImageContainer = styled.div`
   img {
     height: 100%;
   }
+
+  ${deviceMedia[deviceSizes.phone]`
+    width: 140px;
+    height: 140px;
+    margin-bottom: 0px;
+  `};
 `;
 
 const Price = styled.div`
@@ -51,7 +76,14 @@ const Price = styled.div`
     margin: 0;
     font-weight: 700;
     font-size: 18px;
+    line-height: 18px;
   }
+
+  ${deviceMedia[deviceSizes.phone]`
+    p {
+      font-size: 12px;
+    }
+  `};
 `;
 
 const Item = ({ item }) => {
@@ -75,7 +107,6 @@ const Item = ({ item }) => {
           <h5>{translation(`brands.${item?.brands[0]}`)}</h5>
           <p>{item?.title}</p>
           <Price>
-            <span>{item?.price} €</span>
             <p>{item?.rental_price} €</p>
           </Price>
         </StyledItem>

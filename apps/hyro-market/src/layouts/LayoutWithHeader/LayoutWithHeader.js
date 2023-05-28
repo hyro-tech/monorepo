@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Navbar from '../../components/Navbar/Navbar';
+import { deviceMedia, deviceSizes } from '../../styles/helper';
 
 const PageContainer = styled.div`
   height: 100vh;
@@ -13,13 +14,9 @@ const Scratch = styled.img`
 
 const Header = styled.div`
   position: relative;
-  height: 500px;
   width: 100%;
-
-  img {
-    width: 100%;
-    height: 100%;
-  }
+  height: 200px;
+  background-color: #141414;
 
   h1 {
     position: absolute;
@@ -28,21 +25,33 @@ const Header = styled.div`
     transform: translate(-50%, -50%);
     z-index: 100;
     color: white;
-    font-size: 60px;
+    font-size: 40px;
     text-transform: uppercase;
+    text-align: center;
   }
+
+  ${deviceMedia[deviceSizes.phone]`
+    height: 120px;
+    
+    h1 {
+        font-size: 20px;
+    }
+  `};
 `;
 
-const LayoutWithHeader = ({ children }) => {
+const LayoutWithHeader = ({ withDressing = true, withBackLink = false, children }) => {
   return (
     <div>
-      <Navbar />
+      <Navbar withBackLink={withBackLink} />
       <PageContainer>
-        <Header>
-          <h1>Notre dressing</h1>
-          <img src={'/showroom.png'} alt={'showroom'} />
-        </Header>
-        <Scratch src={'/scratch.svg'} />
+        {withDressing && (
+          <>
+            <Header>
+              <h1>Notre dressing</h1>
+            </Header>
+            <Scratch src={'/scratch.svg'} />
+          </>
+        )}
 
         {children}
       </PageContainer>
