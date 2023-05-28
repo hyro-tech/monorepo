@@ -7,7 +7,6 @@ import {
   colorsType,
   sizesOutfitsType,
   sizesShoesType,
-  sizesType,
 } from 'lib-enums';
 import { useRouter } from 'next/router';
 
