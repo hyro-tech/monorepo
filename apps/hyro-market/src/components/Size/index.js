@@ -1,14 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import theme from '../../styles/theme';
+
 const Container = styled.div`
   height: 30px;
   width: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${(props) => (props.selected ? 'black' : '#d2d1d1')};
-  border: 1px solid ${(props) => (props.selected ? 'black' : '#d2d1d1')};
+  color: ${(props) => (props.selected ? 'black' : theme.colors.gray)};
+  border: 1px solid ${(props) => (props.selected ? 'black' : theme.colors.gray)};
   border-radius: 50%;
   padding: 10px;
   font-size: 12px;

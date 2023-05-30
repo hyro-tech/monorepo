@@ -26,6 +26,9 @@ const PageButton = styled.button`
   font-size: 16px;
   cursor: pointer;
   margin: 0 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {

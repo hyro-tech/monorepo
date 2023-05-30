@@ -104,10 +104,12 @@ const Item = ({ item }) => {
           <ItemImageContainer>
             <img src={picture?.path} alt={picture?.name} />
           </ItemImageContainer>
-          <h5>{translation(`brands.${item?.brands[0]}`)}</h5>
+          <h5>{translation(`brands.${item?.brands[0]}`) || 'Other'}</h5>
           <p>{item?.title}</p>
           <Price>
-            <p>{item?.rental_price} €</p>
+            <p>
+              {item?.rental_price || 'n.a'} {item?.rental_price > 0 && '€'}
+            </p>
           </Price>
         </StyledItem>
       </a>

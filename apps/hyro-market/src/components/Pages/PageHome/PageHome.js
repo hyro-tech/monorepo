@@ -164,16 +164,6 @@ const PageHome = ({
     <LayoutWithHeader>
       <ContentContainer>
         <Filters>
-          <Button
-            color={'black'}
-            bgColor={'white'}
-            style={{ marginLeft: 'auto', marginBottom: '30px' }}
-            onClick={() => {
-              router.replace('/');
-            }}
-          >
-            Effacer les filtres
-          </Button>
           <Filter>
             <Dropdown value={'Catégories'}>
               {Object.keys(categoriesType)
@@ -226,6 +216,27 @@ const PageHome = ({
           </Filter>
 
           <Filter>
+            <Dropdown value={'Couleurs'}>
+              {Object.keys(colorsType)
+                .filter((c) => !colors?.includes(c))
+                .map((color) => (
+                  <p key={color} onClick={() => setColors([...colors, color])}>
+                    {translation(`colors.${color}`)}
+                  </p>
+                ))}
+            </Dropdown>
+            <PinsContainer>
+              {colors.map((color) => (
+                <Pin
+                  key={color}
+                  content={translation(`colors.${color}`)}
+                  onClose={() => setColors((ca) => ca.filter((c) => c !== color))}
+                />
+              ))}
+            </PinsContainer>
+          </Filter>
+
+          <Filter>
             <p style={{ marginBottom: '0' }}>Tailles :</p>
             <SizesContainer>
               {Object.keys(sizesOutfitsType).map((size) => (
@@ -267,26 +278,17 @@ const PageHome = ({
             </SizesContainer>
           </Filter>
 
-          <Filter>
-            <Dropdown value={'Couleurs'}>
-              {Object.keys(colorsType)
-                .filter((c) => !colors?.includes(c))
-                .map((color) => (
-                  <p key={color} onClick={() => setColors([...colors, color])}>
-                    {translation(`colors.${color}`)}
-                  </p>
-                ))}
-            </Dropdown>
-            <PinsContainer>
-              {colors.map((color) => (
-                <Pin
-                  key={color}
-                  content={translation(`colors.${color}`)}
-                  onClose={() => setColors((ca) => ca.filter((c) => c !== color))}
-                />
-              ))}
-            </PinsContainer>
-          </Filter>
+          <Button
+            color={'black'}
+            bgColor={'white'}
+            style={{ marginRight: 'auto', marginBottom: '30px' }}
+            small
+            onClick={() => {
+              router.replace('/');
+            }}
+          >
+            Effacer les filtres
+          </Button>
         </Filters>
 
         <ItemsContent>

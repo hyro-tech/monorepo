@@ -9,7 +9,7 @@ const PageContainer = styled.div`
 `;
 
 const Scratch = styled.img`
-  width: 100%;
+  width: 120%;
 `;
 
 const Header = styled.div`
@@ -20,7 +20,7 @@ const Header = styled.div`
 
   h1 {
     position: absolute;
-    top: 50%;
+    top: 70%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 100;
@@ -35,6 +35,7 @@ const Header = styled.div`
     
     h1 {
         font-size: 20px;
+        top: 55%;
     }
   `};
 `;
@@ -47,7 +48,7 @@ const LayoutWithHeader = ({ withDressing = true, withBackLink = false, children 
         {withDressing && (
           <>
             <Header>
-              <h1>Notre dressing</h1>
+              <h1>Le dressing</h1>
             </Header>
             <Scratch src={'/scratch.svg'} />
           </>

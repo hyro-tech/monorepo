@@ -20,6 +20,7 @@ const Menu = styled.div`
     width: 100%;
     margin: 0 0 8px 0;
     font-size: ${theme.font.medium};
+    color: ${theme.colors.gray};
   }
 
   .dropdown-item {
@@ -62,7 +63,7 @@ const Toggle = styled.div`
   height: 50px;
   cursor: ${(props) => (props.selectable && !props.disabled ? 'pointer' : 'default')};
   color: ${(props) => props.disabled && theme.colors.gray};
-  border: 1px solid ${theme.colors.grayBorder};
+  border: 1px solid ${theme.colors.gray};
   border-radius: 35px;
 `;
 
@@ -91,7 +92,7 @@ const Arrow = styled(Image)`
 const Value = styled.span`
   font-size: 16px;
   font-weight: 500;
-  color: #b7b7b7;
+  color: ${theme.colors.gray};
   text-transform: uppercase;
   font-family: Montserrat, sans-serif;
 `;

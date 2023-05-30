@@ -8,9 +8,9 @@ import LayoutWithSidebar from '../src/layouts/LayoutWithSidebar/LayoutWithSideba
 import { PATHS } from '../src/utils';
 import { getItemsFiltered, getItemsPictures } from '../src/actions/items';
 import Actions from '../src/components/Actions/Actions';
-import theme from '../src/styles/theme';
 import ModalCreateAndModifyItem from '../src/components/Modals/ModalCreateAndModifyItem/ModalCreateAndModifyItem';
 import Pagination from '../src/components/Pagination/Pagination';
+import { translation } from '../../../libs/translations';
 
 const Picture = styled.img`
   width: 80px;
@@ -30,14 +30,6 @@ const ColorsContainer = styled.div`
   gap: 5px;
 `;
 
-const Color = styled.div`
-  width: 12px;
-  height: 12px;
-  border: 1px solid ${theme.colors.grayBorder};
-  border-radius: 50%;
-  background-color: ${(props) => props.color};
-`;
-
 const Item = ({ item, i, select }) => {
   const [picture, setPicture] = useState(null);
 
@@ -49,15 +41,15 @@ const Item = ({ item, i, select }) => {
 
   return (
     <StyledRow i={i} onClick={() => select(item)}>
-      <Col xs={2}>
+      <Col xs={1}>
         <Picture src={picture?.path} alt={picture?.name} />
       </Col>
-      <Col xs={2}>{item?.reference}</Col>
+      <Col xs={1}>{item?.reference}</Col>
+      <Col xs={2}>{translation(`brands.${item?.brands[0]}`)}</Col>
+      <Col xs={2}>{translation(`categories.${item?.categories[0]}`)}</Col>
       <Col xs={2}>
         <ColorsContainer>
-          {item?.colors?.map((color) => (
-            <Color key={item._id + color} color={color} />
-          ))}
+          {item?.sizes?.map((size) => translation(`sizes.${size}`))?.join(', ')}
         </ColorsContainer>
       </Col>
       <Col>{item?.title}</Col>
@@ -120,9 +112,11 @@ const Items = () => {
       </Actions>
 
       <Row style={{ padding: '10px', marginBottom: '10px' }}>
-        <Col xs={2}>Image</Col>
-        <Col xs={2}>Référence</Col>
-        <Col xs={2}>Couleurs</Col>
+        <Col xs={1}>Image</Col>
+        <Col xs={1}>Référence</Col>
+        <Col xs={2}>Marque</Col>
+        <Col xs={2}>Catégorie</Col>
+        <Col xs={2}>Tailles</Col>
         <Col>Nom</Col>
       </Row>
 

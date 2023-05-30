@@ -98,26 +98,6 @@ const OthersPictures = styled.div`
   `};
 `;
 
-const Price = styled.div`
-  display: flex;
-  align-items: center;
-  column-gap: 10px;
-
-  span {
-    text-decoration: line-through;
-  }
-
-  p {
-    margin: 0;
-    font-weight: 700;
-    font-size: 18px;
-  }
-
-  ${deviceMedia[deviceSizes.phone]`
-    justify-content: center;
-  `};
-`;
-
 const Infos = styled.div`
   text-align: start;
 `;
@@ -171,23 +151,19 @@ const PageItem = ({ item }) => {
         <MainRight>
           <h5>{translation(`brands.${item?.brands[0]}`)}</h5>
           <p>{item?.title}</p>
-          <Price>
-            <p>{item?.rental_price} €</p>
-          </Price>
 
           <Infos>
-            {item?.commentary && (
-              <div style={{ marginTop: '20px' }}>
-                <span>{item?.commentary}</span>
-              </div>
-            )}
             <div style={{ marginTop: '20px' }}>
               <p>Prix neuf :</p>
-              <span>{item?.price || 'n/a'} €</span>
+              <span>
+                {item?.price || 'n.a'} {item?.price > 0 && '€'}
+              </span>
             </div>
             <div style={{ marginTop: '20px' }}>
               <p>Prix de location :</p>
-              <span>{item?.rental_price} €</span>
+              <span style={{ fontWeight: '600' }}>
+                {item?.rental_price || 'n.a'} {item?.rental_price > 0 && '€'}
+              </span>
             </div>
             <div style={{ marginTop: '20px' }}>
               <p>Tailles disponibles:</p>
@@ -203,6 +179,17 @@ const PageItem = ({ item }) => {
               <div style={{ marginTop: '20px' }}>
                 <p>Couleurs disponibles:</p>
                 {item?.colors?.map((color) => translation(`colors.${color}`))?.join(' - ')}
+              </div>
+            )}
+
+            {item?.commentary && (
+              <div style={{ marginTop: '20px' }}>
+                <span>{item?.commentary}</span>
+              </div>
+            )}
+            {item?.reference && (
+              <div style={{ marginTop: '20px' }}>
+                <span>Référence: {item?.reference}</span>
               </div>
             )}
           </Infos>

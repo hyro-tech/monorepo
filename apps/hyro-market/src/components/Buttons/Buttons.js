@@ -9,8 +9,8 @@ export const Button = styled.button`
   width: ${(props) => (props.full ? '100%' : 'fit-content')};
   min-width: 200px;
   max-width: 400px;
-  padding: 0 40px;
-  height: 50px;
+  padding: ${(props) => (props.small ? '0 20px' : '0 40px')};
+  height: ${(props) => (props.small ? 40 : 50)}px;
   border: 1px solid black;
   border-radius: 35px;
   display: flex;
