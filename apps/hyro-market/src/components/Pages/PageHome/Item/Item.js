@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import Link from 'next/link';
 
 import { getItemsPictures } from '../../../../actions/items';
-import { translation } from '../../../../../../../libs/translations';
 import { deviceMedia, deviceSizes } from '../../../../styles/helper';
 
 const StyledItem = styled.div`
@@ -104,7 +103,7 @@ const Item = ({ item }) => {
           <ItemImageContainer>
             <img src={picture?.path} alt={picture?.name} />
           </ItemImageContainer>
-          <h5>{translation(`brands.${item?.brands[0]}`) || 'Other'}</h5>
+          <h5>{item?.brands[0] || 'Other'}</h5>
           <p>{item?.title}</p>
           <Price>
             <p>

@@ -66,6 +66,21 @@ const Sidebar = ({ path, secondary }) => {
             <p>Articles</p>
           </PageLink>
         </Link>
+        <Link href={PATHS.BRANDS}>
+          <PageLink actualPath={path === PATHS.BRANDS} secondary={secondary}>
+            <p>Marques</p>
+          </PageLink>
+        </Link>
+        <Link href={PATHS.CATEGORIES}>
+          <PageLink actualPath={path === PATHS.CATEGORIES} secondary={secondary}>
+            <p>Catégories</p>
+          </PageLink>
+        </Link>
+        <Link href={PATHS.COLORS}>
+          <PageLink actualPath={path === PATHS.COLORS} secondary={secondary}>
+            <p>Couleurs</p>
+          </PageLink>
+        </Link>
       </Links>
 
       <BottomLinks>

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import styled from 'styled-components';
-import { brandsType, categoriesType, colorsType, sizesType } from 'lib-enums';
+import { sizesType } from 'lib-enums';
 import { useDispatch } from 'react-redux';
 
 import {
@@ -149,7 +149,7 @@ const Pin = ({ content, onClose }) => {
   );
 };
 
-const ModalCreateAndModifyItem = ({ item, handleClose }) => {
+const ModalCreateAndModifyItem = ({ hack, item, handleClose }) => {
   const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -293,11 +293,11 @@ const ModalCreateAndModifyItem = ({ item, handleClose }) => {
         <div>
           <Filter>
             <Dropdown value={'Catégories'}>
-              {Object.keys(categoriesType)
-                .filter((c) => !categories?.includes(c))
+              {hack?.categories
+                ?.filter((c) => !categories?.includes(c))
                 .map((category) => (
                   <p key={category} onClick={() => setCategories([...categories, category])}>
-                    {translation(`categories.${category}`)}
+                    {category}
                   </p>
                 ))}
             </Dropdown>
@@ -305,7 +305,7 @@ const ModalCreateAndModifyItem = ({ item, handleClose }) => {
               {categories.map((category) => (
                 <Pin
                   key={category}
-                  content={translation(`categories.${category}`)}
+                  content={category}
                   onClose={() => setCategories((ca) => ca.filter((c) => c !== category))}
                 />
               ))}
@@ -314,11 +314,11 @@ const ModalCreateAndModifyItem = ({ item, handleClose }) => {
 
           <Filter>
             <Dropdown value={'Marques'}>
-              {Object.keys(brandsType)
-                .filter((c) => !brands?.includes(c))
+              {hack?.brands
+                ?.filter((c) => !brands?.includes(c))
                 .map((brand) => (
                   <p key={brand} onClick={() => setBrands([...brands, brand])}>
-                    {translation(`brands.${brand}`)}
+                    {brand}
                   </p>
                 ))}
             </Dropdown>
@@ -326,7 +326,7 @@ const ModalCreateAndModifyItem = ({ item, handleClose }) => {
               {brands.map((brand) => (
                 <Pin
                   key={brand}
-                  content={translation(`brands.${brand}`)}
+                  content={brand}
                   onClose={() => setBrands((ca) => ca.filter((c) => c !== brand))}
                 />
               ))}
@@ -356,11 +356,11 @@ const ModalCreateAndModifyItem = ({ item, handleClose }) => {
 
           <Filter>
             <Dropdown value={'Couleurs'}>
-              {Object.keys(colorsType)
-                .filter((c) => !colors?.includes(c))
+              {hack?.colors
+                ?.filter((c) => !colors?.includes(c))
                 .map((color) => (
                   <p key={color} onClick={() => setColors([...colors, color])}>
-                    {translation(`colors.${color}`)}
+                    {color}
                   </p>
                 ))}
             </Dropdown>
@@ -368,7 +368,7 @@ const ModalCreateAndModifyItem = ({ item, handleClose }) => {
               {colors.map((color) => (
                 <Pin
                   key={color}
-                  content={translation(`colors.${color}`)}
+                  content={color}
                   onClose={() => setColors((ca) => ca.filter((c) => c !== color))}
                 />
               ))}

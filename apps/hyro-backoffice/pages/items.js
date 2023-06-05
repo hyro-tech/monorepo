@@ -11,6 +11,7 @@ import Actions from '../src/components/Actions/Actions';
 import ModalCreateAndModifyItem from '../src/components/Modals/ModalCreateAndModifyItem/ModalCreateAndModifyItem';
 import Pagination from '../src/components/Pagination/Pagination';
 import { translation } from '../../../libs/translations';
+import { getHack } from '../src/actions/hack';
 
 const Picture = styled.img`
   width: 80px;
@@ -45,8 +46,8 @@ const Item = ({ item, i, select }) => {
         <Picture src={picture?.path} alt={picture?.name} />
       </Col>
       <Col xs={1}>{item?.reference}</Col>
-      <Col xs={2}>{translation(`brands.${item?.brands[0]}`)}</Col>
-      <Col xs={2}>{translation(`categories.${item?.categories[0]}`)}</Col>
+      <Col xs={2}>{item?.brands[0]}</Col>
+      <Col xs={2}>{item?.categories[0]}</Col>
       <Col xs={2}>
         <ColorsContainer>
           {item?.sizes?.map((size) => translation(`sizes.${size}`))?.join(', ')}
@@ -64,10 +65,14 @@ const Items = () => {
 
   const [selectedItem, setSelectedItem] = useState(null);
 
+  const [hack, setHack] = useState(null);
+
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     dispatch(getItemsFiltered());
+
+    getHack().then(setHack);
   }, []);
 
   const [page, setPage] = useState(0);
@@ -75,19 +80,40 @@ const Items = () => {
 
   const [itemsRendered, setItemsRendered] = useState([]);
 
+  const isInTitle = (item, word) => item.title?.toLowerCase()?.includes(word?.toLowerCase());
+  const isInReference = (item, word) =>
+    item.reference?.toLowerCase()?.includes(word?.toLowerCase());
+  const isInBrands = (item, word) =>
+    item.brands
+      ?.map((b) => b?.toLowerCase())
+      ?.join(' ')
+      ?.includes(word?.toLowerCase());
+  const isInCategory = (item, word) =>
+    item.categories
+      ?.map((b) => b?.toLowerCase())
+      ?.join(' ')
+      ?.includes(word?.toLowerCase());
+
   useMemo(() => {
-    if (items) {
-      setItemsRendered([...items].slice(page * perPage, page * perPage + perPage));
-    }
-  }, [page, items]);
+    if (items) setItemsRendered([...items]);
+  }, [items]);
 
   useMemo(() => {
     if (search) {
+      const words = search.split(' ');
+
       setItemsRendered(
-        items.filter((item) => item.reference?.toLowerCase()?.includes(search?.toLowerCase())),
+        items.filter((item) =>
+          words.some(
+            (w) =>
+              isInReference(item, w) ||
+              isInBrands(item, w) ||
+              isInCategory(item, w) ||
+              isInTitle(item, w),
+          ),
+        ),
       );
-    } else if (items) {
-      setItemsRendered([...items].slice(page * perPage, page * perPage + perPage));
+      setPage(0);
     }
   }, [search]);
 
@@ -120,20 +146,22 @@ const Items = () => {
         <Col>Nom</Col>
       </Row>
 
-      {itemsRendered?.map((item, i) => (
+      {itemsRendered?.slice(page * perPage, page * perPage + perPage)?.map((item, i) => (
         <Item item={item} key={item._id} i={i} select={setSelectedItem} />
       ))}
 
-      {!search && (
-        <Pagination
-          currentPage={page}
-          totalPages={items?.length / perPage}
-          onPageChange={setPage}
-        />
-      )}
+      <Pagination
+        currentPage={page}
+        totalPages={Math.floor(itemsRendered?.length / perPage)}
+        onPageChange={setPage}
+      />
 
       {selectedItem && (
-        <ModalCreateAndModifyItem item={selectedItem} handleClose={() => setSelectedItem(null)} />
+        <ModalCreateAndModifyItem
+          hack={hack}
+          item={selectedItem}
+          handleClose={() => setSelectedItem(null)}
+        />
       )}
     </LayoutWithSidebar>
   );

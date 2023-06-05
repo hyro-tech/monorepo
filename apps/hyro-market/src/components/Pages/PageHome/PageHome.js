@@ -1,13 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
-import {
-  brandsType,
-  categoriesType,
-  colorsType,
-  sizesOutfitsType,
-  sizesShoesType,
-} from 'lib-enums';
+import { sizesOutfitsType, sizesShoesType } from 'lib-enums';
 import { useRouter } from 'next/router';
 
 import { deviceMedia, deviceSizes } from '../../../styles/helper';
@@ -111,6 +105,7 @@ const SizesContainer = styled.div`
 `;
 
 const PageHome = ({
+  hack = [],
   initialCategories = [],
   initialBrands = [],
   initialSizes = [],
@@ -151,8 +146,6 @@ const PageHome = ({
       );
     }
 
-    console.log({ sizes });
-
     setPage(0);
   }, [categories, brands, sizes, colors]);
 
@@ -166,11 +159,11 @@ const PageHome = ({
         <Filters>
           <Filter>
             <Dropdown value={'Catégories'}>
-              {Object.keys(categoriesType)
-                .filter((c) => !categories?.includes(c))
+              {hack?.categories
+                ?.filter((c) => !categories?.includes(c))
                 .map((category) => (
                   <p key={category} onClick={() => setCategories([...categories, category])}>
-                    {translation(`categories.${category}`)}
+                    {category}
                   </p>
                 ))}
             </Dropdown>
@@ -178,7 +171,7 @@ const PageHome = ({
               {categories.map((category) => (
                 <Pin
                   key={category}
-                  content={translation(`categories.${category}`)}
+                  content={category}
                   onClose={() => {
                     setCategories(categories?.filter((c) => c !== category));
                   }}
@@ -189,8 +182,8 @@ const PageHome = ({
 
           <Filter>
             <Dropdown value={'Marques'}>
-              {Object.keys(brandsType)
-                .filter((c) => !brands?.includes(c))
+              {hack?.brands
+                ?.filter((c) => !brands?.includes(c))
                 .map((brand) => (
                   <p
                     key={brand}
@@ -198,7 +191,7 @@ const PageHome = ({
                       setBrands([...brands, brand]);
                     }}
                   >
-                    {translation(`brands.${brand}`)}
+                    {brand}
                   </p>
                 ))}
             </Dropdown>
@@ -206,7 +199,7 @@ const PageHome = ({
               {brands.map((brand) => (
                 <Pin
                   key={brand}
-                  content={translation(`brands.${brand}`)}
+                  content={brand}
                   onClose={() => {
                     setBrands(brands?.filter((c) => c !== brand));
                   }}
@@ -217,11 +210,11 @@ const PageHome = ({
 
           <Filter>
             <Dropdown value={'Couleurs'}>
-              {Object.keys(colorsType)
-                .filter((c) => !colors?.includes(c))
+              {hack?.colors
+                ?.filter((c) => !colors?.includes(c))
                 .map((color) => (
                   <p key={color} onClick={() => setColors([...colors, color])}>
-                    {translation(`colors.${color}`)}
+                    {color}
                   </p>
                 ))}
             </Dropdown>
@@ -229,7 +222,7 @@ const PageHome = ({
               {colors.map((color) => (
                 <Pin
                   key={color}
-                  content={translation(`colors.${color}`)}
+                  content={color}
                   onClose={() => setColors((ca) => ca.filter((c) => c !== color))}
                 />
               ))}
