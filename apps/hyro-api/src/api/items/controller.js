@@ -23,6 +23,12 @@ async function updateById(req, res) {
   return res.send(item);
 }
 
+async function create(req, res) {
+  const item = await ItemsRepository.createItem(req.body);
+
+  return res.send(item);
+}
+
 async function getPictures(req, res) {
   const item = await ItemsRepository.getById(req.params.itemId);
   if (!item) {
@@ -92,6 +98,7 @@ async function removePicture(req, res) {
 }
 
 export default {
+  create,
   getFiltered,
   getPictures,
   getById,

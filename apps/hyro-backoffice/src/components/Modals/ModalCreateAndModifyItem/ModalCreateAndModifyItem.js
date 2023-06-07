@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import styled from 'styled-components';
 import { sizesType } from 'lib-enums';
@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 
 import {
   addItemsPicture,
+  createItem,
   getItemsPictures,
   removeItemsPicture,
   updateItem,
@@ -176,6 +177,14 @@ const ModalCreateAndModifyItem = ({ hack, item, handleClose }) => {
     }
   }, [item]);
 
+  useEffect(() => {
+    console.log({
+      title: newItem?.title,
+      categories: newItem?.categories,
+      brands: newItem?.brands,
+    });
+  }, [newItem]);
+
   const uploadPicture = (event) => {
     const allowedFileTypes = ['jpeg', 'jpg', 'png'];
     const errosEnum = {
@@ -214,31 +223,58 @@ const ModalCreateAndModifyItem = ({ hack, item, handleClose }) => {
         await removeItemsPicture(item._id, picToDel);
       }
 
-      const picturesToUpload = pictures?.filter((p) => !p._id);
-      for await (const pic of picturesToUpload) {
-        const body = new FormData();
-        body.append('file', pic.path);
-        await addItemsPicture(item._id, body);
+      if (item._id) {
+        dispatch(
+          updateItem(
+            item._id,
+            removeNullInObject({
+              title: newItem?.title,
+              reference: newItem?.reference,
+              price: parseInt(newItem?.price, 10),
+              rental_price: parseInt(newItem?.rental_price, 10),
+              commentary: newItem?.commentary,
+              categories,
+              brands,
+              sizes,
+              colors,
+            }),
+          ),
+        ).then(async () => {
+          const picturesToUpload = pictures?.filter((p) => !p._id);
+          for await (const pic of picturesToUpload) {
+            const body = new FormData();
+            body.append('file', pic.path);
+            await addItemsPicture(item._id, body);
+          }
+          setIsLoading(false);
+        });
+      } else {
+        dispatch(
+          createItem(
+            removeNullInObject({
+              title: newItem?.title,
+              reference: newItem?.reference,
+              price: parseInt(newItem?.price, 10),
+              rental_price: parseInt(newItem?.rental_price, 10),
+              commentary: newItem?.commentary,
+              categories,
+              brands,
+              sizes,
+              colors,
+            }),
+          ),
+        ).then(async ({ response }) => {
+          if (response) {
+            const picturesToUpload = pictures?.filter((p) => !p._id);
+            for await (const pic of picturesToUpload) {
+              const body = new FormData();
+              body.append('file', pic.path);
+              await addItemsPicture(response?._id, body);
+            }
+          }
+          setIsLoading(false);
+        });
       }
-
-      dispatch(
-        updateItem(
-          item._id,
-          removeNullInObject({
-            title: newItem?.title,
-            reference: newItem?.reference,
-            price: parseInt(newItem?.price, 10),
-            rental_price: parseInt(newItem?.rental_price, 10),
-            commentary: newItem?.commentary,
-            categories,
-            brands,
-            sizes,
-            colors,
-          }),
-        ),
-      ).then(() => {
-        setIsLoading(false);
-      });
     }
   };
 
@@ -427,7 +463,7 @@ const ModalCreateAndModifyItem = ({ hack, item, handleClose }) => {
             Fermer
           </Button>
           <Button
-            disabled={!newItem?.title || !newItem?.categories?.length || !newItem?.brands?.length}
+            disabled={!newItem?.title || !categories?.length || !brands?.length}
             onClick={update}
           >
             {isLoading && <Spinner />} {isModify ? 'Modifier' : 'Ajouter'}

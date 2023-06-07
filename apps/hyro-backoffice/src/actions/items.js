@@ -4,6 +4,29 @@ import callApi from '../middlewares/callApi';
 export const UPDATE_ITEM_SUCCESS = 'UPDATE_ITEM_SUCCESS';
 export const UPDATE_ITEM_FAILURE = 'UPDATE_ITEM_FAILURE';
 
+export async function createItem(data) {
+  try {
+    const token = getCookie(COOKIES_NAMES.token);
+
+    if (token) {
+      const item = await callApi({
+        method: 'POST',
+        url: `/items`,
+        data,
+      });
+
+      return {
+        type: UPDATE_ITEM_SUCCESS,
+        response: item,
+      };
+    }
+  } catch (err) {
+    return {
+      type: UPDATE_ITEM_FAILURE,
+    };
+  }
+}
+
 export async function updateItem(itemId, data) {
   try {
     const token = getCookie(COOKIES_NAMES.token);

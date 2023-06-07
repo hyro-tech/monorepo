@@ -4,14 +4,7 @@ async function createItem(payload) {
   const ItemsModel = getItemsModel();
 
   return ItemsModel.create({
-    title: payload.title,
-    brands: payload.brands,
-    categories: payload.categories,
-    short_description: payload.short_description,
-    description: payload.description,
-    sizes: payload.sizes,
-    price: payload.price,
-    rental_price: payload.rental_price,
+    ...payload,
     images: [],
   });
 }

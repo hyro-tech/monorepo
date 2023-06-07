@@ -38,7 +38,7 @@ const Hyro = styled.img`
 `;
 
 const SignIn = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('cheikh.mbaye@hyroparis.com');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 

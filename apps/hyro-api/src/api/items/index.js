@@ -18,6 +18,8 @@ router.get('/:itemId/pictures', wrapper(itemsController.getPictures));
 
 router.patch('/:itemId', tokenMiddleware, wrapper(itemsController.updateById));
 
+router.post('/', tokenMiddleware, wrapper(itemsController.create));
+
 router.post(
   '/:itemId/picture',
   tokenMiddleware,
