@@ -20,6 +20,8 @@ router.patch('/:itemId', tokenMiddleware, wrapper(itemsController.updateById));
 
 router.post('/', tokenMiddleware, wrapper(itemsController.create));
 
+router.post('/:itemId/place/:place', tokenMiddleware, wrapper(itemsController.updatePlaceById));
+
 router.post(
   '/:itemId/picture',
   tokenMiddleware,

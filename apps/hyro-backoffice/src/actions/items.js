@@ -79,6 +79,28 @@ export async function getItemsFiltered(filter) {
   }
 }
 
+export async function updateItemPlace(itemId, place) {
+  try {
+    const token = getCookie(COOKIES_NAMES.token);
+
+    if (token) {
+      const items = await callApi({
+        method: 'POST',
+        url: `/items/${itemId}/place/${place}`,
+      });
+
+      return {
+        type: GET_ITEMS_SUCCESS,
+        response: items,
+      };
+    }
+  } catch (err) {
+    return {
+      type: GET_ITEMS_FAILURE,
+    };
+  }
+}
+
 export const GET_ITEMS_PICTURES_SUCCESS = 'GET_ITEMS_PICTURES_SUCCESS';
 export const GET_ITEMS_PICTURES_FAILURE = 'GET_ITEMS_PICTURES_FAILURE';
 

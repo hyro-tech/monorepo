@@ -332,9 +332,11 @@ const PageHome = ({
 
         <ItemsContent>
           <ItemsContainer>
-            {itemsRendered?.map((item) => (
-              <Item item={item} key={item?._id} />
-            ))}
+            {itemsRendered
+              ?.sort((a, b) => a.place - b.place)
+              ?.map((item) => (
+                <Item item={item} key={item?._id} />
+              ))}
             <Pagination
               currentPage={page}
               totalPages={itemsFiltered?.length / perPage}

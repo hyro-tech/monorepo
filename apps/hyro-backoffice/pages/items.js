@@ -146,9 +146,12 @@ const Items = () => {
         <Col>Nom</Col>
       </Row>
 
-      {itemsRendered?.slice(page * perPage, page * perPage + perPage)?.map((item, i) => (
-        <Item item={item} key={item._id} i={i} select={setSelectedItem} />
-      ))}
+      {itemsRendered
+        ?.slice(page * perPage, page * perPage + perPage)
+        ?.sort((a, b) => a.place - b.place)
+        ?.map((item, i) => (
+          <Item item={item} key={item._id} i={i} select={setSelectedItem} />
+        ))}
 
       <Pagination
         currentPage={page}
@@ -160,6 +163,7 @@ const Items = () => {
         <ModalCreateAndModifyItem
           hack={hack}
           item={selectedItem}
+          itemsLength={items?.length}
           handleClose={() => setSelectedItem(null)}
         />
       )}

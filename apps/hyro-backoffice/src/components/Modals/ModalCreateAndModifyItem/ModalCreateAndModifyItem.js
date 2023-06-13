@@ -11,6 +11,7 @@ import {
   getItemsPictures,
   removeItemsPicture,
   updateItem,
+  updateItemPlace,
 } from '../../../actions/items';
 import { translation } from '../../../../../../libs/translations';
 import Dropdown from '../../Dropdown/Dropdown';
@@ -151,10 +152,12 @@ const Pin = ({ content, onClose }) => {
   );
 };
 
-const ModalCreateAndModifyItem = ({ hack, item, handleClose }) => {
+const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
   const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [place, setPlace] = useState(item?.place || itemsLength);
 
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -250,6 +253,10 @@ const ModalCreateAndModifyItem = ({ hack, item, handleClose }) => {
             }
             setIsLoading(false);
             toast.success('Article modifié');
+            if (item?.place !== place) {
+              await dispatch(updateItemPlace(item._id, place));
+              toast.success("Place de l'article mis à jour");
+            }
             handleClose();
           })
           .catch((err) => toast.error(err));
@@ -280,6 +287,7 @@ const ModalCreateAndModifyItem = ({ hack, item, handleClose }) => {
             }
             setIsLoading(false);
             toast.success('Article ajouté');
+            await dispatch(updateItemPlace(response._id, place));
             handleClose();
           })
           .catch((err) => toast.error(err));
@@ -325,6 +333,11 @@ const ModalCreateAndModifyItem = ({ hack, item, handleClose }) => {
             value={newItem?.rental_price}
             onChange={(e) => setNewItem({ ...newItem, rental_price: e.target.value })}
           />
+        </div>
+
+        <div style={{ marginBottom: '20px' }}>
+          <h6>Place:</h6>
+          <Input value={place} onChange={(e) => setPlace(e.target.value)} />
         </div>
 
         <div style={{ marginBottom: '20px' }}>

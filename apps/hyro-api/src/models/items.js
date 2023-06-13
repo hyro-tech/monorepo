@@ -2,6 +2,10 @@ import { Schema, model } from 'mongoose';
 
 const ItemsSchema = new Schema(
   {
+    place: {
+      type: Number,
+      required: false,
+    },
     reference: {
       type: String,
       required: false,

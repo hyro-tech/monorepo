@@ -23,8 +23,46 @@ async function updateById(req, res) {
   return res.send(item);
 }
 
+async function updatePlaceById(req, res) {
+  const newPlace = parseInt(req.params.place); // Convertir en nombre entier
+  const itemId = req.params.itemId;
+
+  const itemToUpdate = await ItemsRepository.getById(itemId);
+  const currentPlace = itemToUpdate.place;
+
+  if (newPlace === currentPlace) {
+    return res
+      .status(httpStatus.UNPROCESSABLE_ENTITY)
+      .json({ error: 'New place value is the same as the current place' });
+  }
+
+  // Mettre à jour les places des autres items
+  if (newPlace > currentPlace) {
+    // Déplacer l'item vers le bas
+    await ItemsRepository.updateMany(
+      { place: { $gt: currentPlace, $lte: newPlace } },
+      { $inc: { place: -1 } },
+    );
+  } else {
+    // Déplacer l'item vers le haut
+    await ItemsRepository.updateMany(
+      { place: { $lt: currentPlace, $gte: newPlace } },
+      { $inc: { place: 1 } },
+    );
+  }
+
+  // Mettre à jour la place de l'item spécifique
+  await ItemsRepository.updateById(itemId, { place: newPlace });
+
+  const items = await ItemsRepository.getFiltered();
+
+  return res.send(items);
+}
+
 async function create(req, res) {
-  const item = await ItemsRepository.createItem(req.body);
+  const place = await ItemsRepository.getMaxPlace();
+
+  const item = await ItemsRepository.createItem({ ...req.body, place });
 
   return res.send(item);
 }
@@ -105,4 +143,5 @@ export default {
   uploadPicture,
   removePicture,
   updateById,
+  updatePlaceById,
 };
