@@ -53,7 +53,8 @@ const MenuWrapper = styled.div`
 `;
 
 const Toggle = styled.div`
-  min-width: 300px;
+  width: 300px;
+  max-width: 100%;
   padding: 0 25px;
   display: flex;
   row-gap: 20px;

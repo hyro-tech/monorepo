@@ -13,6 +13,7 @@ import Pagination from '../../Pagination/Pagination';
 import LayoutWithHeader from '../../../layouts/LayoutWithHeader/LayoutWithHeader';
 import Size from '../../Size';
 import { Button } from '../../Buttons/Buttons';
+import ModalMobileFilters from './ModalMobileFilters/ModalMobileFilters';
 
 const ContentContainer = styled.div`
   display: flex;
@@ -77,6 +78,17 @@ const Filters = styled.div`
   `};
 `;
 
+const MobileFilters = styled.div`
+  display: none;
+
+  ${deviceMedia[deviceSizes.phone]`
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    padding-bottom: 20px;
+  `};
+`;
+
 const Filter = styled.div`
   display: flex;
   flex-direction: column;
@@ -88,6 +100,7 @@ const ItemsContent = styled.div`
   display: flex;
   flex-direction: column;
   column-gap: 10px;
+  margin-right: auto;
 `;
 
 const Pin = ({ content, onClose }) => {
@@ -105,7 +118,7 @@ const SizesContainer = styled.div`
 `;
 
 const PageHome = ({
-  hack = [],
+  hack = {},
   initialCategories = [],
   initialBrands = [],
   initialSizes = [],
@@ -114,6 +127,8 @@ const PageHome = ({
   const router = useRouter();
 
   const items = useSelector((state) => state.items);
+
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const [categories, setCategories] = useState(initialCategories);
   const [brands, setBrands] = useState(initialBrands);
@@ -130,6 +145,13 @@ const PageHome = ({
   const isInBrands = (item) => !brands?.length || item.brands?.find((c) => brands.includes(c));
   const isInSizes = (item) => !sizes?.length || item.sizes?.find((c) => sizes.includes(c));
   const isInColors = (item) => !colors?.length || item.colors?.find((c) => colors.includes(c));
+
+  const reset = () => {
+    setCategories(initialCategories);
+    setBrands(initialBrands);
+    setSizes(initialSizes);
+    setColors(initialColors);
+  };
 
   useMemo(() => {
     if (items) {
@@ -156,6 +178,30 @@ const PageHome = ({
   return (
     <LayoutWithHeader>
       <ContentContainer>
+        <MobileFilters onClick={() => setShowMobileFilters(true)}>
+          <img
+            src={'/filter.svg'}
+            alt={'filters'}
+            style={{ width: '20px', height: '20px', marginRight: '10px' }}
+          />
+          <span>Filtres</span>
+          <div
+            style={{
+              color: 'black',
+              backgroundColor: '#cacaca',
+              borderRadius: '50%',
+              fontSize: '10px',
+              width: '16px',
+              height: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: '10px',
+            }}
+          >
+            <span>{categories?.length + brands?.length + sizes?.length + colors?.length}</span>
+          </div>
+        </MobileFilters>
         <Filters>
           <Filter>
             <Dropdown value={'Catégories'}>
@@ -297,6 +343,22 @@ const PageHome = ({
           </ItemsContainer>
         </ItemsContent>
       </ContentContainer>
+
+      {showMobileFilters && (
+        <ModalMobileFilters
+          hack={hack}
+          categories={categories}
+          setCategories={setCategories}
+          brands={brands}
+          setBrands={setBrands}
+          sizes={sizes}
+          setSizes={setSizes}
+          colors={colors}
+          setColors={setColors}
+          reset={reset}
+          handleClose={() => setShowMobileFilters(false)}
+        />
+      )}
     </LayoutWithHeader>
   );
 };

@@ -1,8 +1,8 @@
 import { COOKIES_NAMES, getCookie } from '../utils';
 import callApi from '../middlewares/callApi';
 
-export const UPDATE_ITEM_SUCCESS = 'UPDATE_ITEM_SUCCESS';
-export const UPDATE_ITEM_FAILURE = 'UPDATE_ITEM_FAILURE';
+export const CREATE_ITEM_SUCCESS = 'CREATE_ITEM_SUCCESS';
+export const CREATE_ITEM_FAILURE = 'CREATE_ITEM_FAILURE';
 
 export async function createItem(data) {
   try {
@@ -16,16 +16,19 @@ export async function createItem(data) {
       });
 
       return {
-        type: UPDATE_ITEM_SUCCESS,
+        type: CREATE_ITEM_SUCCESS,
         response: item,
       };
     }
   } catch (err) {
     return {
-      type: UPDATE_ITEM_FAILURE,
+      type: CREATE_ITEM_FAILURE,
     };
   }
 }
+
+export const UPDATE_ITEM_SUCCESS = 'UPDATE_ITEM_SUCCESS';
+export const UPDATE_ITEM_FAILURE = 'UPDATE_ITEM_FAILURE';
 
 export async function updateItem(itemId, data) {
   try {

@@ -6,7 +6,7 @@ import { tokenMiddleware } from '../../middlewares';
 
 const router = express.Router({ mergeParams: true });
 
-router.get('/', tokenMiddleware, wrapper(hackController.get));
+router.get('/', wrapper(hackController.get));
 
 router.post('/', tokenMiddleware, wrapper(hackController.update));
 

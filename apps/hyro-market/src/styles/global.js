@@ -52,8 +52,9 @@ export const GlobalStyle = createGlobalStyle`
   
   .modal-dialog {
     max-width: 600px;
+    margin: 0;
   }
-  
+
   .modal-item {
     width: 600px;
     max-width: 100%;

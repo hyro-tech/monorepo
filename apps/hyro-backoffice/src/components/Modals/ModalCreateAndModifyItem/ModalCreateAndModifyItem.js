@@ -3,6 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import styled from 'styled-components';
 import { sizesType } from 'lib-enums';
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 
 import {
   addItemsPicture,
@@ -239,15 +240,19 @@ const ModalCreateAndModifyItem = ({ hack, item, handleClose }) => {
               colors,
             }),
           ),
-        ).then(async () => {
-          const picturesToUpload = pictures?.filter((p) => !p._id);
-          for await (const pic of picturesToUpload) {
-            const body = new FormData();
-            body.append('file', pic.path);
-            await addItemsPicture(item._id, body);
-          }
-          setIsLoading(false);
-        });
+        )
+          .then(async () => {
+            const picturesToUpload = pictures?.filter((p) => !p._id);
+            for await (const pic of picturesToUpload) {
+              const body = new FormData();
+              body.append('file', pic.path);
+              await addItemsPicture(item._id, body);
+            }
+            setIsLoading(false);
+            toast.success('Article modifié');
+            handleClose();
+          })
+          .catch((err) => toast.error(err));
       } else {
         dispatch(
           createItem(
@@ -263,17 +268,21 @@ const ModalCreateAndModifyItem = ({ hack, item, handleClose }) => {
               colors,
             }),
           ),
-        ).then(async ({ response }) => {
-          if (response) {
-            const picturesToUpload = pictures?.filter((p) => !p._id);
-            for await (const pic of picturesToUpload) {
-              const body = new FormData();
-              body.append('file', pic.path);
-              await addItemsPicture(response?._id, body);
+        )
+          .then(async ({ response }) => {
+            if (response) {
+              const picturesToUpload = pictures?.filter((p) => !p._id);
+              for await (const pic of picturesToUpload) {
+                const body = new FormData();
+                body.append('file', pic.path);
+                await addItemsPicture(response?._id, body);
+              }
             }
-          }
-          setIsLoading(false);
-        });
+            setIsLoading(false);
+            toast.success('Article ajouté');
+            handleClose();
+          })
+          .catch((err) => toast.error(err));
       }
     }
   };

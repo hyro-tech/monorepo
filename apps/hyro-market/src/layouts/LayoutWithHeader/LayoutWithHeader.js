@@ -9,7 +9,7 @@ const PageContainer = styled.div`
 `;
 
 const Scratch = styled.img`
-  width: 120%;
+  width: 100%;
 `;
 
 const Header = styled.div`

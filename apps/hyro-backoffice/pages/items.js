@@ -103,8 +103,8 @@ const Items = () => {
       const words = search.split(' ');
 
       setItemsRendered(
-        items.filter((item) =>
-          words.some(
+        items?.filter((item) =>
+          words?.some(
             (w) =>
               isInReference(item, w) ||
               isInBrands(item, w) ||
