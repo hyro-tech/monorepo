@@ -11,9 +11,8 @@ const Home = ({ categories, brands, sizes, colors }) => {
   const [hack, setHack] = useState(null);
 
   useEffect(() => {
-    dispatch(getItemsFiltered({}, 1));
-
     getHack().then(setHack);
+    dispatch(getItemsFiltered({}, 1));
   }, []);
 
   return (

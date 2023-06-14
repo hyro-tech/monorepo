@@ -39,6 +39,8 @@ const Header = styled.div`
 `;
 
 const Content = styled.div`
+  padding-bottom: 100px;
+
   h6 {
     margin-bottom: 10px;
   }
@@ -96,154 +98,156 @@ const ModalMobileFilters = ({
   return (
     <Modal show>
       <TakeAllModal>
-        <Header>
-          {!filter && <h4>FILTRER</h4>}
-          {filter > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center' }} onClick={() => setFilter(0)}>
-              <img
-                src={'/arrow.svg'}
-                alt={'back'}
-                style={{
-                  width: '20px',
-                  height: '20px',
-                  transform: 'rotate(-90deg)',
-                  marginRight: '10px',
-                }}
-              />
-              <h4>Retour</h4>
+        <Content>
+          <Header>
+            {!filter && <h4>FILTRER</h4>}
+            {filter > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center' }} onClick={() => setFilter(0)}>
+                <img
+                  src={'/arrow.svg'}
+                  alt={'back'}
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    transform: 'rotate(-90deg)',
+                    marginRight: '10px',
+                  }}
+                />
+                <h4>Retour</h4>
+              </div>
+            )}
+            {!filter && <span onClick={reset}>TOUT REINITIALISER</span>}
+          </Header>
+          {!filter && (
+            <div>
+              <Category isFirst onClick={() => setFilter(1)}>
+                <p>Catégories</p>
+                <span>{categories?.join(', ')}</span>
+              </Category>
+              <Category onClick={() => setFilter(2)}>
+                <p>Marques</p>
+                <span>{brands?.join(', ')}</span>
+              </Category>
+              <Category onClick={() => setFilter(3)}>
+                <p>Couleurs</p>
+                <span>{colors?.join(', ')}</span>
+              </Category>
+              <Category onClick={() => setFilter(4)}>
+                <p>Tailles</p>
+                <span>{sizes?.map((c) => translation(`sizes.${c}`))?.join(', ')}</span>
+              </Category>
             </div>
           )}
-          {!filter && <span onClick={reset}>TOUT REINITIALISER</span>}
-        </Header>
-        {!filter && (
-          <Content>
-            <Category isFirst onClick={() => setFilter(1)}>
-              <p>Catégories</p>
-              <span>{categories?.join(', ')}</span>
-            </Category>
-            <Category onClick={() => setFilter(2)}>
-              <p>Marques</p>
-              <span>{brands?.join(', ')}</span>
-            </Category>
-            <Category onClick={() => setFilter(3)}>
-              <p>Couleurs</p>
-              <span>{colors?.join(', ')}</span>
-            </Category>
-            <Category onClick={() => setFilter(4)}>
-              <p>Tailles</p>
-              <span>{sizes?.map((c) => translation(`sizes.${c}`))?.join(', ')}</span>
-            </Category>
 
-            <Button
-              onClick={handleClose}
-              style={{
-                width: '80%',
-                position: 'absolute',
-                bottom: '20px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-              }}
-            >
-              Voir les articles
-            </Button>
-          </Content>
-        )}
+          {filter === 1 && (
+            <div>
+              {hack?.categories?.map((c, index) => (
+                <Category
+                  isFirst={!index}
+                  key={`category_${c}`}
+                  isSelected={categories?.find((x) => c === x)}
+                  onClick={() => {
+                    if (categories?.find((x) => c === x)) {
+                      setCategories(categories?.filter((x) => c !== x));
+                    } else {
+                      setCategories([...categories, c]);
+                    }
+                  }}
+                >
+                  <p>{c}</p>
+                  {categories?.find((x) => c === x) && (
+                    <img src={'/check_green.svg'} alt={'check'} style={{ width: '14px' }} />
+                  )}
+                </Category>
+              ))}
+            </div>
+          )}
 
-        {filter === 1 && (
-          <Content>
-            {hack?.categories?.map((c, index) => (
-              <Category
-                isFirst={!index}
-                key={`category_${c}`}
-                isSelected={categories?.find((x) => c === x)}
-                onClick={() => {
-                  if (categories?.find((x) => c === x)) {
-                    setCategories(categories?.filter((x) => c !== x));
-                  } else {
-                    setCategories([...categories, c]);
-                  }
-                }}
-              >
-                <p>{c}</p>
-                {categories?.find((x) => c === x) && (
-                  <img src={'/check_green.svg'} alt={'check'} style={{ width: '14px' }} />
-                )}
-              </Category>
-            ))}
-          </Content>
-        )}
+          {filter === 2 && (
+            <div>
+              {hack?.brands?.map((c, index) => (
+                <Category
+                  isFirst={!index}
+                  key={`brand${c}`}
+                  isSelected={brands?.find((x) => c === x)}
+                  onClick={() => {
+                    if (brands?.find((x) => c === x)) {
+                      setBrands(brands?.filter((x) => c !== x));
+                    } else {
+                      setBrands([...brands, c]);
+                    }
+                  }}
+                >
+                  <p>{c}</p>
+                  {brands?.find((x) => c === x) && (
+                    <img src={'/check_green.svg'} alt={'check'} style={{ width: '14px' }} />
+                  )}
+                </Category>
+              ))}
+            </div>
+          )}
 
-        {filter === 2 && (
-          <Content>
-            {hack?.brands?.map((c, index) => (
-              <Category
-                isFirst={!index}
-                key={`brand${c}`}
-                isSelected={brands?.find((x) => c === x)}
-                onClick={() => {
-                  if (brands?.find((x) => c === x)) {
-                    setBrands(brands?.filter((x) => c !== x));
-                  } else {
-                    setBrands([...brands, c]);
-                  }
-                }}
-              >
-                <p>{c}</p>
-                {brands?.find((x) => c === x) && (
-                  <img src={'/check_green.svg'} alt={'check'} style={{ width: '14px' }} />
-                )}
-              </Category>
-            ))}
-          </Content>
-        )}
+          {filter === 3 && (
+            <div>
+              {hack?.colors?.map((c, index) => (
+                <Category
+                  isFirst={!index}
+                  key={`colors${c}x`}
+                  isSelected={colors?.find((x) => c === x)}
+                  onClick={() => {
+                    if (colors?.find((x) => c === x)) {
+                      setColors(colors?.filter((x) => c !== x));
+                    } else {
+                      setColors([...colors, c]);
+                    }
+                  }}
+                >
+                  <p>{c}</p>
+                  {colors?.find((x) => c === x) && (
+                    <img src={'/check_green.svg'} alt={'check'} style={{ width: '14px' }} />
+                  )}
+                </Category>
+              ))}
+            </div>
+          )}
 
-        {filter === 3 && (
-          <Content>
-            {hack?.colors?.map((c, index) => (
-              <Category
-                isFirst={!index}
-                key={`colors${c}x`}
-                isSelected={colors?.find((x) => c === x)}
-                onClick={() => {
-                  if (colors?.find((x) => c === x)) {
-                    setColors(colors?.filter((x) => c !== x));
-                  } else {
-                    setColors([...colors, c]);
-                  }
-                }}
-              >
-                <p>{c}</p>
-                {colors?.find((x) => c === x) && (
-                  <img src={'/check_green.svg'} alt={'check'} style={{ width: '14px' }} />
-                )}
-              </Category>
-            ))}
-          </Content>
-        )}
+          {filter === 4 && (
+            <div>
+              {Object.keys(sizesType)?.map((c, index) => (
+                <Category
+                  isFirst={!index}
+                  key={`sizes${c}`}
+                  isSelected={sizes?.find((x) => c === x)}
+                  onClick={() => {
+                    if (sizes?.find((x) => c === x)) {
+                      setSizes(sizes?.filter((x) => c !== x));
+                    } else {
+                      setSizes([...sizes, c]);
+                    }
+                  }}
+                >
+                  <p>{translation(`sizes.${c}`)}</p>
+                  {sizes?.find((x) => c === x) && (
+                    <img src={'/check_green.svg'} alt={'check'} style={{ width: '14px' }} />
+                  )}
+                </Category>
+              ))}
+            </div>
+          )}
 
-        {filter === 4 && (
-          <Content>
-            {Object.keys(sizesType)?.map((c, index) => (
-              <Category
-                isFirst={!index}
-                key={`sizes${c}`}
-                isSelected={sizes?.find((x) => c === x)}
-                onClick={() => {
-                  if (sizes?.find((x) => c === x)) {
-                    setSizes(sizes?.filter((x) => c !== x));
-                  } else {
-                    setSizes([...sizes, c]);
-                  }
-                }}
-              >
-                <p>{translation(`sizes.${c}`)}</p>
-                {sizes?.find((x) => c === x) && (
-                  <img src={'/check_green.svg'} alt={'check'} style={{ width: '14px' }} />
-                )}
-              </Category>
-            ))}
-          </Content>
-        )}
+          <Button
+            onClick={handleClose}
+            style={{
+              width: '80%',
+              position: 'fixed',
+              bottom: '20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+            }}
+          >
+            Voir les articles
+          </Button>
+        </Content>
       </TakeAllModal>
     </Modal>
   );
