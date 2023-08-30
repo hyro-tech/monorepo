@@ -33,7 +33,7 @@ const Brands = () => {
       </Actions>
 
       <Row style={{ padding: '10px', marginBottom: '10px' }}>
-        <Col>Marque</Col>
+        <Col>Couleurs</Col>
       </Row>
 
       {hack?.colors?.map((brand, i) => (

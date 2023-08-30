@@ -111,9 +111,11 @@ export async function fillNewbase() {
     let articles = [];
     for await (const i of iter) {
       const ret = await getProductsFromWooCommerce(WooCommerceApi, i);
+      console.log(ret);
       if (ret.length) articles = articles.concat(ret);
     }
 
+    /*
     for await (const article of articles) {
       const item = await ItemsRepository.createItem({
         title: article.name,
@@ -148,7 +150,7 @@ export async function fillNewbase() {
 
       await Promise.all(pictures.map((pic) => uploadPicture(pic.path, pic.src)));
     }
-
+*/
     console.log('fill-new-base done');
   } catch (err) {
     console.log(err);

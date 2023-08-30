@@ -98,7 +98,7 @@ const Value = styled.span`
   font-family: Montserrat, sans-serif;
 `;
 
-const Dropdown = ({ value, small, disabled, children }) => {
+const Dropdown = ({ toggle, value, small, disabled, children }) => {
   const isSelectable = React.Children?.toArray(children)?.length;
 
   return (
@@ -110,8 +110,13 @@ const Dropdown = ({ value, small, disabled, children }) => {
         small={small}
         disabled={disabled}
       >
-        <Value>{value}</Value>
-        {isSelectable > 0 && <Arrow disabled={disabled} src={'/arrow.svg'} />}
+        {!toggle && (
+          <>
+            <Value>{value}</Value>
+            {isSelectable > 0 && <Arrow disabled={disabled} src={'/arrow.svg'} />}
+          </>
+        )}
+        {toggle}
       </BootstrapDropdown.Toggle>
 
       {!disabled && children && (

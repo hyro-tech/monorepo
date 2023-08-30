@@ -9,7 +9,8 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${(props) => (props.selected ? 'black' : theme.colors.gray)};
+  background-color: ${(props) => (props.selected ? 'black' : 'transparent')};
+  color: ${(props) => (props.selected ? 'white' : theme.colors.gray)};
   border: 1px solid ${(props) => (props.selected ? 'black' : theme.colors.gray)};
   border-radius: 50%;
   padding: 10px;

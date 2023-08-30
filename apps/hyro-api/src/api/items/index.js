@@ -10,9 +10,11 @@ const upload = multer({ storage });
 
 const router = express.Router({ mergeParams: true });
 
-router.get('/', wrapper(itemsController.getFiltered));
+router.get('/all', wrapper(itemsController.getAll));
 
 router.get('/:itemId', wrapper(itemsController.getById));
+
+router.get('/:itemId/related', wrapper(itemsController.getRelatedItemsById));
 
 router.get('/:itemId/pictures', wrapper(itemsController.getPictures));
 
@@ -28,6 +30,8 @@ router.post(
   upload.single('file'),
   wrapper(itemsController.uploadPicture),
 );
+
+router.delete('/:itemId', tokenMiddleware, wrapper(itemsController.deleteById));
 
 router.delete(
   '/:itemId/picture/:pictureId',

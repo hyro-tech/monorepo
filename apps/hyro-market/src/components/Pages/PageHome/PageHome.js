@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { sizesOutfitsType, sizesShoesType } from 'lib-enums';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 import { deviceMedia, deviceSizes } from '../../../styles/helper';
 import Item from './Item/Item';
@@ -14,6 +15,7 @@ import LayoutWithHeader from '../../../layouts/LayoutWithHeader/LayoutWithHeader
 import Size from '../../Size';
 import { Button } from '../../Buttons/Buttons';
 import ModalMobileFilters from './ModalMobileFilters/ModalMobileFilters';
+import Spinner from '../../Spinner/Spinner';
 
 const ContentContainer = styled.div`
   display: flex;
@@ -117,6 +119,19 @@ const SizesContainer = styled.div`
   gap: 5px;
 `;
 
+const Search = styled.input`
+  height: 50px;
+  width: 300px;
+  max-width: 100%;
+  border: none;
+  border-radius: 35px;
+  padding: 10px 20px;
+  outline: none;
+  font-size: ${theme.font.medium};
+  ${(props) => props.disabled && 'background: none'};
+  background: transparent;
+`;
+
 const PageHome = ({
   hack = {},
   initialCategories = [],
@@ -139,6 +154,9 @@ const PageHome = ({
   const perPage = 12;
   const [itemsFiltered, setItemsFiltered] = useState([]);
   const [itemsRendered, setItemsRendered] = useState([]);
+  const [itemsSearch, setItemsSearch] = useState([]);
+
+  const [search, setSearch] = useState('');
 
   const isInCategories = (item) =>
     !categories?.length || item.categories?.find((c) => categories.includes(c));
@@ -146,12 +164,48 @@ const PageHome = ({
   const isInSizes = (item) => !sizes?.length || item.sizes?.find((c) => sizes.includes(c));
   const isInColors = (item) => !colors?.length || item.colors?.find((c) => colors.includes(c));
 
+  const searchIsInTitle = (item, word) => item.title?.toLowerCase()?.includes(word?.toLowerCase());
+  const searchIsInReference = (item, word) =>
+    item.reference?.toLowerCase()?.includes(word?.toLowerCase());
+  const searchIsInBrands = (item, word) =>
+    item.brands
+      ?.map((b) => b?.toLowerCase())
+      ?.join(' ')
+      ?.includes(word?.toLowerCase());
+  const searchIsInCategory = (item, word) =>
+    item.categories
+      ?.map((b) => b?.toLowerCase())
+      ?.join(' ')
+      ?.includes(word?.toLowerCase());
+
   const reset = () => {
     setCategories(initialCategories);
     setBrands(initialBrands);
     setSizes(initialSizes);
     setColors(initialColors);
   };
+
+  useMemo(() => {
+    if (search) {
+      const words = search.split(' ');
+
+      setItemsSearch(
+        items
+          ?.filter((item) =>
+            words?.some(
+              (w) =>
+                searchIsInReference(item, w) ||
+                searchIsInBrands(item, w) ||
+                searchIsInCategory(item, w) ||
+                searchIsInTitle(item, w),
+            ),
+          )
+          .slice(0, 20),
+      );
+    } else {
+      setItemsSearch([]);
+    }
+  }, [search]);
 
   useMemo(() => {
     if (items) {
@@ -203,6 +257,28 @@ const PageHome = ({
           </div>
         </MobileFilters>
         <Filters>
+          <Filter>
+            <Dropdown
+              toggle={
+                <Search
+                  placeholder={'Recherche...'}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              }
+            >
+              {itemsSearch?.map((itemSearched) => {
+                return (
+                  <Link href={`/items/${itemSearched._id}`} key={`searched_${itemSearched._id}`}>
+                    <p>
+                      {itemSearched.reference} - {itemSearched.title}
+                    </p>
+                  </Link>
+                );
+              })}
+              {itemsSearch?.length < 1 && search?.length > 0 && <Spinner />}
+            </Dropdown>
+          </Filter>
           <Filter>
             <Dropdown value={'Catégories'}>
               {hack?.categories

@@ -4,6 +4,7 @@ import {
   REMOVE_ITEMS_PICTURE_SUCCESS,
   UPDATE_ITEM_SUCCESS,
   CREATE_ITEM_SUCCESS,
+  DELETE_ITEM_SUCCESS,
 } from '../actions/items';
 
 export function itemsReducers(state = null, action) {
@@ -16,6 +17,10 @@ export function itemsReducers(state = null, action) {
     case UPDATE_ITEM_SUCCESS: {
       if (!action.response) return state;
       return state.map((item) => (item._id === action.response._id ? action.response : item));
+    }
+    case DELETE_ITEM_SUCCESS: {
+      if (!action.response?._id) return state;
+      return state.filter((item) => item._id !== action.response._id);
     }
     case CREATE_ITEM_SUCCESS: {
       if (!action.response) return state;

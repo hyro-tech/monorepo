@@ -5,8 +5,35 @@ import { ItemsRepository } from '../../repositories';
 import { S3Service } from '../../services';
 import { getSecondUtilEndOfDay } from '../../utils';
 
+async function getAll(req, res) {
+  const items = await ItemsRepository.getAll();
+
+  return res.send(items);
+}
+
 async function getFiltered(req, res) {
   const items = await ItemsRepository.getFiltered();
+
+  return res.send(items);
+}
+
+async function getRelatedItemsById(req, res) {
+  const item = await ItemsRepository.getById(req.params.itemId);
+
+  console.log(item);
+
+  if (!item || !item.related_items || item.related_items.split(',').length < 1) {
+    return res.status(httpStatus.NOT_FOUND).end();
+  }
+
+  const items = [];
+  for await (const relatedRef of item.related_items.split(',')) {
+    const relatedItem = await ItemsRepository.getByReference(relatedRef);
+
+    const pic = await await S3Service.S3GetPath(relatedItem.images[0].path);
+
+    items.push({ ...relatedItem, picture: pic });
+  }
 
   return res.send(items);
 }
@@ -15,6 +42,12 @@ async function getById(req, res) {
   const item = await ItemsRepository.getById(req.params.itemId);
 
   return res.send(item);
+}
+
+async function deleteById(req, res) {
+  await ItemsRepository.deleteById(req.params.itemId);
+
+  return res.status(httpStatus.OK).end();
 }
 
 async function updateById(req, res) {
@@ -64,7 +97,11 @@ async function create(req, res) {
 
   const item = await ItemsRepository.createItem({ ...req.body, place });
 
-  return res.send(item);
+  await ItemsRepository.updateMany({ place: { $gt: place, $lte: 1 } }, { $inc: { place: -1 } });
+
+  const updatedItem = await ItemsRepository.getById(item._id);
+
+  return res.send(updatedItem);
 }
 
 async function getPictures(req, res) {
@@ -137,9 +174,12 @@ async function removePicture(req, res) {
 
 export default {
   create,
+  getAll,
   getFiltered,
+  getRelatedItemsById,
   getPictures,
   getById,
+  deleteById,
   uploadPicture,
   removePicture,
   updateById,

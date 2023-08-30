@@ -1,8 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import Link from 'next/link';
 
 import Navbar from '../../components/Navbar/Navbar';
 import { deviceMedia, deviceSizes } from '../../styles/helper';
+import { PATHS } from '../../utils';
 
 const PageContainer = styled.div`
   height: 100vh;
@@ -40,10 +42,18 @@ const Header = styled.div`
   `};
 `;
 
+const Logo = styled.img`
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  position: absolute;
+  left: 20px;
+  top: 20px;
+`;
+
 const LayoutWithHeader = ({ withDressing = true, withBackLink = false, children }) => {
   return (
     <div>
-      <Navbar withBackLink={withBackLink} />
       <PageContainer>
         {withDressing && (
           <>
@@ -51,6 +61,10 @@ const LayoutWithHeader = ({ withDressing = true, withBackLink = false, children 
               <h1>Le dressing</h1>
             </Header>
             <Scratch src={'/scratch.svg'} />
+
+            <Link href={PATHS.HOME}>
+              <Logo src={'/logo-white.svg'} alt={'logo'} />
+            </Link>
           </>
         )}
 

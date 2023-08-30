@@ -2,9 +2,10 @@ import React from 'react';
 
 import PageItem from '../../src/components/Pages/PageItem/PageItem';
 import callApi from '../../src/middlewares/callApi';
+import { getItemsRelated } from '../../src/actions/items';
 
-const Item = ({ item }) => {
-  return <PageItem item={item} />;
+const Item = ({ item, related }) => {
+  return <PageItem item={item} related={related} />;
 };
 
 export async function getServerSideProps({ query }) {
@@ -12,9 +13,12 @@ export async function getServerSideProps({ query }) {
     url: `/items/${query.itemId}`,
   });
 
+  const related = await getItemsRelated(query.itemId);
+
   return {
     props: {
       item,
+      related,
     },
   };
 }

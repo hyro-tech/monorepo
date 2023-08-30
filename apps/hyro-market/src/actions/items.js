@@ -7,7 +7,7 @@ export async function getItemsFiltered(filter) {
   try {
     const items = await callApi({
       method: 'GET',
-      url: `/items`,
+      url: `/items/all`,
       query: filter,
     });
 
@@ -19,6 +19,19 @@ export async function getItemsFiltered(filter) {
     return {
       type: GET_ITEMS_FAILURE,
     };
+  }
+}
+
+export async function getItemsRelated(itemId) {
+  try {
+    const items = await callApi({
+      method: 'GET',
+      url: `/items/${itemId}/related`,
+    });
+
+    return items;
+  } catch (err) {
+    return [];
   }
 }
 

@@ -11,12 +11,6 @@ const Container = styled.div`
   border-bottom: 1px solid #141414;
 `;
 
-const Logo = styled.img`
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-`;
-
 const BackLink = styled.img`
   position: absolute;
   left: 40px;
@@ -31,9 +25,7 @@ const Navbar = ({ withBackLink = false }) => {
   return (
     <Container>
       {withBackLink && <BackLink src={'/arrow.svg'} onClick={() => window?.close()} />}
-      <a href={'https://hyro.agency'}>
-        <Logo src={'/logo.svg'} alt={'logo'} />
-      </a>
+      <a href={'https://hyro.agency'}></a>
     </Container>
   );
 };

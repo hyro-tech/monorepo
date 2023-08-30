@@ -9,6 +9,7 @@ import theme from '../src/styles/theme';
 import { getPersistor, wrapper } from '../src/store';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../src/styles/fonts/index.scss';
+import 'react-image-gallery/styles/css/image-gallery.css';
 import { imagesLinks } from '../src/utils';
 
 class MyApp extends App {

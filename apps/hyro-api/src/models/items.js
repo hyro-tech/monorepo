@@ -42,6 +42,10 @@ const ItemsSchema = new Schema(
       type: Number,
       required: false,
     },
+    reversal: {
+      type: Number,
+      required: false,
+    },
     commentary: {
       type: String,
       required: false,
@@ -57,6 +61,15 @@ const ItemsSchema = new Schema(
     },
     available: {
       type: Boolean,
+      required: false,
+    },
+    is_hidden: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    related_items: {
+      type: String,
       required: false,
     },
     created_at: {

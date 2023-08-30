@@ -3,6 +3,7 @@ import express from 'express';
 import serviceExpress from './services/express';
 import * as db from './services/mongodb';
 import configs from './configs';
+import { fillNewbase } from '../fill-new-base';
 
 require('esm');
 
@@ -15,6 +16,8 @@ async function start() {
   try {
     console.log('Establishing connexion with database...');
     await db.connect(configs.services.mongodb.uri);
+
+    await fillNewbase();
 
     console.log(`Welcome on app, port: ${configs.port}`);
   } catch (err) {

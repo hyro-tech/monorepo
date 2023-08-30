@@ -53,6 +53,31 @@ export async function updateItem(itemId, data) {
   }
 }
 
+export const DELETE_ITEM_SUCCESS = 'DELETE_ITEM_SUCCESS';
+export const DELETE_ITEM_FAILURE = 'DELETE_ITEM_FAILURE';
+
+export async function deleteItem(itemId) {
+  try {
+    const token = getCookie(COOKIES_NAMES.token);
+
+    if (token) {
+      await callApi({
+        method: 'DELETE',
+        url: `/items/${itemId}`,
+      });
+
+      return {
+        type: DELETE_ITEM_SUCCESS,
+        response: { _id: itemId },
+      };
+    }
+  } catch (err) {
+    return {
+      type: DELETE_ITEM_FAILURE,
+    };
+  }
+}
+
 export const GET_ITEMS_SUCCESS = 'GET_ITEMS_SUCCESS';
 export const GET_ITEMS_FAILURE = 'GET_ITEMS_FAILURE';
 
@@ -63,7 +88,7 @@ export async function getItemsFiltered(filter) {
     if (token) {
       const items = await callApi({
         method: 'GET',
-        url: `/items`,
+        url: `/items/all`,
         query: filter,
       });
 

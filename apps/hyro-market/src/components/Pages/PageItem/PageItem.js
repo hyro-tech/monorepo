@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import ImageGallery from 'react-image-gallery';
+import Link from 'next/link';
 
 import { getItemsPictures } from '../../../actions/items';
 import LayoutWithHeader from '../../../layouts/LayoutWithHeader/LayoutWithHeader';
@@ -14,7 +16,6 @@ const Main = styled.div`
   justify-content: center;
   column-gap: 40px;
   padding: 20px;
-  height: 80vh;
   margin-top: 80px;
 
   ${deviceMedia[deviceSizes.phone]`
@@ -26,11 +27,19 @@ const Main = styled.div`
   `};
 `;
 
+const MainLeftMobile = styled.div`
+  display: none;
+
+  ${deviceMedia[deviceSizes.phone]`
+      display: block;
+  `};
+`;
+
 const MainLeft = styled.div`
   width: 400px;
 
   ${deviceMedia[deviceSizes.phone]`
-    margin-top: 0px;
+    display: none;
   `};
 `;
 
@@ -48,8 +57,7 @@ const MainRight = styled.div`
   }
 
   ${deviceMedia[deviceSizes.phone]`
-    text-align: center;
-    padding-bottom: 40px;
+    padding-bottom: ${(props) => (props.hasRelated ? 0 : 40)}px;
     padding-top: 20px;
   `};
 `;
@@ -73,14 +81,14 @@ const ItemImageContainer = styled.div`
 
 const OthersPictures = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: ${(props) => (props.alignStart ? 'start' : 'center')};
   gap: 10px;
   flex-wrap: wrap;
   padding: 10px 0;
 
   div {
-    width: 100px;
-    height: 100px;
+    width: ${(props) => (props.big ? 160 : 100)}px;
+    height: ${(props) => (props.big ? 160 : 100)}px;
     background-color: #f3f3f5;
     display: flex;
     align-items: center;
@@ -95,6 +103,11 @@ const OthersPictures = styled.div`
   ${deviceMedia[deviceSizes.phone]`
     text-align: center;
     padding: 20px 20px 40px 20px;
+    
+    div {
+      width: ${(props) => (props.big ? 120 : 100)}px;
+      height: ${(props) => (props.big ? 120 : 100)}px;
+    }
   `};
 `;
 
@@ -108,9 +121,18 @@ const SizesContainer = styled.div`
   gap: 5px;
 `;
 
-const PageItem = ({ item }) => {
+const OnlyDesktop = styled.div`
+  text-align: center;
+
+  ${deviceMedia[deviceSizes.phone]`
+      display: none;
+  `};
+`;
+
+const PageItem = ({ item, related }) => {
   const router = useRouter();
 
+  const [gallery, setGallery] = useState(null);
   const [mainPicture, setMainPicture] = useState(null);
   const [othersPictures, setOthersPictures] = useState([]);
 
@@ -120,6 +142,7 @@ const PageItem = ({ item }) => {
         if (pictures) {
           setMainPicture(pictures[0]);
           setOthersPictures(pictures?.slice(1, pictures?.length));
+          setGallery(pictures?.map((pic) => ({ original: pic.path, thumbnail: pic.path })));
         }
       });
     }
@@ -128,6 +151,20 @@ const PageItem = ({ item }) => {
   return (
     <LayoutWithHeader withDressing={false} withBackLink={true}>
       <Main>
+        <MainLeftMobile>
+          {gallery && (
+            <ImageGallery
+              showNav={false}
+              showBullets={true}
+              showFullscreenButton={false}
+              showThumbnails={false}
+              showPlayButton={false}
+              items={gallery}
+              bulletClass={{ boxShadow: 'none' }}
+            />
+          )}
+        </MainLeftMobile>
+
         <MainLeft>
           <ItemImageContainer>
             <img src={mainPicture?.path} alt={mainPicture?.name} />
@@ -148,9 +185,9 @@ const PageItem = ({ item }) => {
             </OthersPictures>
           )}
         </MainLeft>
-        <MainRight>
-          <h5>{translation(`brands.${item?.brands[0]}`)}</h5>
+        <MainRight hasRelated={related?.length}>
           <p>{item?.title}</p>
+          <span style={{ fontWeight: 600 }}>{item?.brands[0]}</span>
 
           <Infos>
             <div style={{ marginTop: '20px' }}>
@@ -209,7 +246,45 @@ const PageItem = ({ item }) => {
             </a>
           </div>
         </MainRight>
+
+        <MainLeftMobile>
+          {related?.length > 0 && (
+            <div style={{ marginTop: '40px' }}>
+              <h2 style={{ textAlign: 'center' }}>Vous aimerez aussi</h2>
+
+              <OthersPictures big>
+                {related.map((relatedItem) => (
+                  <Link href={`/items/${relatedItem._id}`} passHref key={relatedItem._id}>
+                    <div>
+                      <img src={relatedItem?.picture} alt={relatedItem?.picture} />
+                    </div>
+                  </Link>
+                ))}
+              </OthersPictures>
+            </div>
+          )}
+        </MainLeftMobile>
       </Main>
+
+      <OnlyDesktop>
+        {related?.length > 0 && (
+          <div style={{ marginTop: '40px' }}>
+            <h2>Vous aimerez aussi</h2>
+
+            <OthersPictures big>
+              {related.map((relatedItem) => (
+                <Link href={`/items/${relatedItem._id}`} passHref key={relatedItem._id}>
+                  <a target="_blank" rel="noopener noreferrer">
+                    <div>
+                      <img src={relatedItem?.picture} alt={relatedItem?.picture} />
+                    </div>
+                  </a>
+                </Link>
+              ))}
+            </OthersPictures>
+          </div>
+        )}
+      </OnlyDesktop>
     </LayoutWithHeader>
   );
 };

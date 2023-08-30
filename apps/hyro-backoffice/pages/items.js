@@ -3,15 +3,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 
 import LayoutWithSidebar from '../src/layouts/LayoutWithSidebar/LayoutWithSidebar';
 import { PATHS } from '../src/utils';
-import { getItemsFiltered, getItemsPictures } from '../src/actions/items';
+import { deleteItem, getItemsFiltered, getItemsPictures } from '../src/actions/items';
 import Actions from '../src/components/Actions/Actions';
 import ModalCreateAndModifyItem from '../src/components/Modals/ModalCreateAndModifyItem/ModalCreateAndModifyItem';
 import Pagination from '../src/components/Pagination/Pagination';
 import { translation } from '../../../libs/translations';
 import { getHack } from '../src/actions/hack';
+import ModalConfirm from '../src/components/Modals/ModalConfirm/ModalConfirm';
+import { colors } from '../src/styles/theme';
 
 const Picture = styled.img`
   width: 80px;
@@ -32,7 +35,11 @@ const ColorsContainer = styled.div`
 `;
 
 const Item = ({ item, i, select }) => {
+  const [remove, setRemove] = useState(false);
+
   const [picture, setPicture] = useState(null);
+
+  const dispatch = useDispatch();
 
   useMemo(() => {
     getItemsPictures(item?._id).then(({ response: pictures }) => {
@@ -41,20 +48,71 @@ const Item = ({ item, i, select }) => {
   }, [item]);
 
   return (
-    <StyledRow i={i} onClick={() => select(item)}>
-      <Col xs={1}>
-        <Picture src={picture?.path} alt={picture?.name} />
-      </Col>
-      <Col xs={1}>{item?.reference}</Col>
-      <Col xs={2}>{item?.brands[0]}</Col>
-      <Col xs={2}>{item?.categories[0]}</Col>
-      <Col xs={2}>
-        <ColorsContainer>
-          {item?.sizes?.map((size) => translation(`sizes.${size}`))?.join(', ')}
-        </ColorsContainer>
-      </Col>
-      <Col>{item?.title}</Col>
-    </StyledRow>
+    <>
+      <StyledRow i={i}>
+        <Col xs={1} onClick={() => select(item)}>
+          <Picture src={picture?.path} alt={picture?.name} />
+        </Col>
+        <Col xs={1} onClick={() => select(item)}>
+          {item?.reference}
+        </Col>
+        <Col xs={1} onClick={() => select(item)}>
+          {item?.rental_price} -{' '}
+          <span style={{ textDecoration: 'line-through' }}>{item?.price}</span>
+        </Col>
+        <Col xs={1} onClick={() => select(item)}>
+          {item?.reversal || 0}
+        </Col>
+        <Col xs={1} onClick={() => select(item)}>
+          {item?.brands[0]}
+        </Col>
+        <Col xs={2} onClick={() => select(item)}>
+          {item?.categories[0]}
+        </Col>
+        <Col xs={1} onClick={() => select(item)}>
+          <ColorsContainer>
+            {item?.sizes?.map((size) => translation(`sizes.${size}`))?.join(', ')}
+          </ColorsContainer>
+        </Col>
+        <Col xs={1} onClick={() => select(item)}>
+          <ColorsContainer>{item?.colors?.join(', ')}</ColorsContainer>
+        </Col>
+        <Col onClick={() => select(item)}>{item?.title}</Col>
+        <Col onClick={() => select(item)}>{item?.commentary}</Col>
+        <Col>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <button
+              style={{
+                width: 'fit-content',
+                backgroundColor: colors.gray,
+                color: 'white',
+                fontSize: '10px',
+              }}
+              onClick={() => select({ ...item, _id: null })}
+            >
+              Dupliquer
+            </button>
+            <button
+              style={{
+                width: 'fit-content',
+                backgroundColor: colors.red,
+                color: 'white',
+                fontSize: '10px',
+              }}
+              onClick={() => setRemove(true)}
+            >
+              Supprimer
+            </button>
+          </div>
+        </Col>
+      </StyledRow>
+      {remove && (
+        <ModalConfirm
+          action={() => dispatch(deleteItem(item?._id)).then(() => toast.success('Item supprimé'))}
+          handleClose={() => setRemove(false)}
+        />
+      )}
+    </>
   );
 };
 
@@ -114,6 +172,8 @@ const Items = () => {
         ),
       );
       setPage(0);
+    } else {
+      setItemsRendered(items);
     }
   }, [search]);
 
@@ -121,8 +181,8 @@ const Items = () => {
     <LayoutWithSidebar path={PATHS.ITEMS}>
       <Actions>
         <div style={{ display: 'flex', alignItems: 'center', marginRight: 'auto', gap: '20px' }}>
-          <span>Référence:</span>
           <input
+            placeholder={'Recherche...'}
             style={{
               border: `1px solid black`,
               borderRadius: '35px',
@@ -140,10 +200,15 @@ const Items = () => {
       <Row style={{ padding: '10px', marginBottom: '10px' }}>
         <Col xs={1}>Image</Col>
         <Col xs={1}>Référence</Col>
-        <Col xs={2}>Marque</Col>
+        <Col xs={1}>Prix</Col>
+        <Col xs={1}>Reversé</Col>
+        <Col xs={1}>Marque</Col>
         <Col xs={2}>Catégorie</Col>
-        <Col xs={2}>Tailles</Col>
+        <Col xs={1}>Tailles</Col>
+        <Col xs={1}>Couleurs</Col>
         <Col>Nom</Col>
+        <Col>Commentaire</Col>
+        <Col>Actions</Col>
       </Row>
 
       {itemsRendered

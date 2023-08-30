@@ -34,6 +34,7 @@ const Header = styled.div`
   }
 
   span {
+    font-size: 14px;
     font-weight: 200;
   }
 `;

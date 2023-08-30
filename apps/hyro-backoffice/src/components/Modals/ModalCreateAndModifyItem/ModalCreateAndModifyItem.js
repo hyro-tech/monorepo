@@ -1,9 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import styled from 'styled-components';
-import { sizesType } from 'lib-enums';
+import { sizesOutfitsType, sizesShoesType } from 'lib-enums';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import { Form } from 'react-bootstrap';
 
 import {
   addItemsPicture,
@@ -172,22 +173,12 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
   const isModify = !!item?._id;
 
   useMemo(() => {
-    if (item?._id) {
-      getItemsPictures(item?._id).then(({ response: pictures }) => setPictures(pictures));
-      setCategories(item?.categories || []);
-      setBrands(item?.brands || []);
-      setSizes(item?.sizes || []);
-      setColors(item?.colors || []);
-    }
+    getItemsPictures(item?._id).then(({ response: pictures }) => setPictures(pictures));
+    setCategories(item?.categories || []);
+    setBrands(item?.brands || []);
+    setSizes(item?.sizes || []);
+    setColors(item?.colors || []);
   }, [item]);
-
-  useEffect(() => {
-    console.log({
-      title: newItem?.title,
-      categories: newItem?.categories,
-      brands: newItem?.brands,
-    });
-  }, [newItem]);
 
   const uploadPicture = (event) => {
     const allowedFileTypes = ['jpeg', 'jpg', 'png'];
@@ -229,20 +220,18 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
 
       if (item._id) {
         dispatch(
-          updateItem(
-            item._id,
-            removeNullInObject({
-              title: newItem?.title,
-              reference: newItem?.reference,
-              price: parseInt(newItem?.price, 10),
-              rental_price: parseInt(newItem?.rental_price, 10),
-              commentary: newItem?.commentary,
-              categories,
-              brands,
-              sizes,
-              colors,
-            }),
-          ),
+          updateItem(item._id, {
+            title: newItem?.title,
+            reference: newItem?.reference,
+            price: parseInt(newItem?.price, 10),
+            rental_price: parseInt(newItem?.rental_price, 10),
+            commentary: newItem?.commentary,
+            related_items: newItem?.related_items || '',
+            categories,
+            brands,
+            sizes,
+            colors,
+          }),
         )
           .then(async () => {
             const picturesToUpload = pictures?.filter((p) => !p._id);
@@ -310,7 +299,6 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
             onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
           />
         </div>
-
         <div style={{ marginBottom: '20px' }}>
           <h6>Référence:</h6>
           <Input
@@ -320,13 +308,22 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
         </div>
 
         <div style={{ marginBottom: '20px' }}>
+          <h6 style={{ margin: 0 }}>Masqué</h6>
+          <Form.Check
+            type="switch"
+            id="custom-switch"
+            label=""
+            checked={newItem?.is_hidden}
+            onChange={(e) => setNewItem({ ...newItem, is_hidden: e.target.checked })}
+          />
+        </div>
+        <div style={{ marginBottom: '20px' }}>
           <h6>Prix neuf:</h6>
           <Input
             value={newItem?.price}
             onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
           />
         </div>
-
         <div style={{ marginBottom: '20px' }}>
           <h6>Prix de location:</h6>
           <Input
@@ -334,12 +331,19 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
             onChange={(e) => setNewItem({ ...newItem, rental_price: e.target.value })}
           />
         </div>
-
         <div style={{ marginBottom: '20px' }}>
-          <h6>Place:</h6>
-          <Input value={place} onChange={(e) => setPlace(e.target.value)} />
+          <h6>Reversé:</h6>
+          <Input
+            value={newItem?.reversal}
+            onChange={(e) => setNewItem({ ...newItem, reversal: e.target.value })}
+          />
         </div>
-
+        {newItem?._id && (
+          <div style={{ marginBottom: '20px' }}>
+            <h6>Place:</h6>
+            <Input value={place} onChange={(e) => setPlace(e.target.value)} />
+          </div>
+        )}
         <div style={{ marginBottom: '20px' }}>
           <h6>Commentaire :</h6>
           <Input
@@ -347,7 +351,6 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
             onChange={(e) => setNewItem({ ...newItem, commentary: e.target.value })}
           />
         </div>
-
         <div>
           <Filter>
             <Dropdown value={'Catégories'}>
@@ -393,7 +396,14 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
 
           <Filter>
             <Dropdown value={'Tailles'}>
-              {Object.keys(sizesType)
+              {Object.keys(sizesOutfitsType)
+                .filter((c) => !sizes?.includes(c))
+                .map((size) => (
+                  <p key={size} onClick={() => setSizes([...sizes, size])}>
+                    {translation(`sizes.${size}`)}
+                  </p>
+                ))}
+              {Object.keys(sizesShoesType)
                 .filter((c) => !sizes?.includes(c))
                 .map((size) => (
                   <p key={size} onClick={() => setSizes([...sizes, size])}>
@@ -433,7 +443,6 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
             </PinsContainer>
           </Filter>
         </div>
-
         <div>
           <p>Photos de l&apos;article (5 maximum) :</p>
 
@@ -477,6 +486,15 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
             type="file"
             name="file"
             onChange={uploadPicture}
+          />
+        </div>
+
+        <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+          <h6>Ils aimeront aussi:</h6>
+          <Input
+            value={newItem?.related_items}
+            onChange={(e) => setNewItem({ ...newItem, related_items: e.target.value })}
+            placeholder={'id,id,...'}
           />
         </div>
 

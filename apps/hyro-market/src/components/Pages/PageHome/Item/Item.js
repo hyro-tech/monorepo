@@ -24,7 +24,7 @@ const StyledItem = styled.div`
   }
 
   ${deviceMedia[deviceSizes.phone]`
-    max-width: 140px;
+    max-width: 150px;
     
     h5 {
       margin-top: 5px;
@@ -34,7 +34,6 @@ const StyledItem = styled.div`
     p {
       font-size: 12px;
       line-height: 16px;  
-      height: 32px;
       text-overflow: ellipsis;
       overflow: hidden;
     }
@@ -59,6 +58,7 @@ const ItemImageContainer = styled.div`
     width: 140px;
     height: 140px;
     margin-bottom: 0px;
+    padding: 5px;
   `};
 `;
 
@@ -69,6 +69,7 @@ const Price = styled.div`
 
   span {
     text-decoration: line-through;
+    font-size: 13px;
   }
 
   p {
@@ -80,6 +81,9 @@ const Price = styled.div`
 
   ${deviceMedia[deviceSizes.phone]`
     p {
+      font-size: 14px;
+    }
+    span {
       font-size: 12px;
     }
   `};
@@ -104,11 +108,14 @@ const Item = ({ item }) => {
             <img src={picture?.path} alt={picture?.name} />
           </ItemImageContainer>
           <h5>{item?.brands[0] || 'Other'}</h5>
-          <p>{item?.title}</p>
+          <div style={{ height: '32px' }}>
+            <p>{item?.title}</p>
+          </div>
           <Price>
             <p>
               {item?.rental_price || 'n.a'} {item?.rental_price > 0 && '€'}
             </p>
+            <span>{item?.price > 0 ? `${item?.price}€` : 'n.a'}</span>
           </Price>
         </StyledItem>
       </a>
