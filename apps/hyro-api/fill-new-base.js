@@ -111,11 +111,14 @@ export async function fillNewbase() {
     let articles = [];
     for await (const i of iter) {
       const ret = await getProductsFromWooCommerce(WooCommerceApi, i);
-      console.log(ret);
       if (ret.length) articles = articles.concat(ret);
     }
 
-    /*
+    const date = new Date('2023-06-17T00:00:00');
+
+    articles = articles.filter((article) => new Date(article.date_created) > date);
+
+    console.log('Uplaod in progress...');
     for await (const article of articles) {
       const item = await ItemsRepository.createItem({
         title: article.name,
@@ -150,7 +153,6 @@ export async function fillNewbase() {
 
       await Promise.all(pictures.map((pic) => uploadPicture(pic.path, pic.src)));
     }
-*/
     console.log('fill-new-base done');
   } catch (err) {
     console.log(err);

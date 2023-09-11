@@ -24,7 +24,7 @@ const StyledItem = styled.div`
   }
 
   ${deviceMedia[deviceSizes.phone]`
-    max-width: 150px;
+    max-width: 200px;
     
     h5 {
       margin-top: 5px;
@@ -55,8 +55,8 @@ const ItemImageContainer = styled.div`
   }
 
   ${deviceMedia[deviceSizes.phone]`
-    width: 140px;
-    height: 140px;
+    width: 160px;
+    height: 160px;
     margin-bottom: 0px;
     padding: 5px;
   `};

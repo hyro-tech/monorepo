@@ -212,12 +212,12 @@ const PageItem = ({ item, related }) => {
                 ))}
               </SizesContainer>
             </div>
-            {item?.colors?.length > 0 && (
+            {/*item?.colors?.length > 0 && (
               <div style={{ marginTop: '20px' }}>
                 <p>Couleurs disponibles:</p>
                 {item?.colors?.map((color) => translation(`colors.${color}`))?.join(' - ')}
               </div>
-            )}
+            )*/}
 
             {item?.commentary && (
               <div style={{ marginTop: '20px' }}>

@@ -80,15 +80,22 @@ const Filters = styled.div`
   `};
 `;
 
-const MobileFilters = styled.div`
+const MobileFiltersContainer = styled.div`
   display: none;
 
   ${deviceMedia[deviceSizes.phone]`
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-    padding-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 20px;
   `};
+`;
+
+const MobileFilters = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: auto;
 `;
 
 const Filter = styled.div`
@@ -130,6 +137,10 @@ const Search = styled.input`
   font-size: ${theme.font.medium};
   ${(props) => props.disabled && 'background: none'};
   background: transparent;
+
+  ${deviceMedia[deviceSizes.phone]`
+    max-width: 200px;
+  `};
 `;
 
 const PageHome = ({
@@ -232,30 +243,54 @@ const PageHome = ({
   return (
     <LayoutWithHeader>
       <ContentContainer>
-        <MobileFilters onClick={() => setShowMobileFilters(true)}>
-          <img
-            src={'/filter.svg'}
-            alt={'filters'}
-            style={{ width: '20px', height: '20px', marginRight: '10px' }}
-          />
-          <span>Filtres</span>
-          <div
-            style={{
-              color: 'black',
-              backgroundColor: '#cacaca',
-              borderRadius: '50%',
-              fontSize: '10px',
-              width: '16px',
-              height: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginLeft: '10px',
-            }}
-          >
-            <span>{categories?.length + brands?.length + sizes?.length + colors?.length}</span>
+        <MobileFiltersContainer>
+          <div style={{ maxWidth: '200px' }}>
+            <Dropdown
+              toggle={
+                <Search
+                  placeholder={'Recherche...'}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              }
+            >
+              {itemsSearch?.map((itemSearched) => {
+                return (
+                  <Link href={`/items/${itemSearched._id}`} key={`searched_${itemSearched._id}`}>
+                    <p>
+                      {itemSearched.reference} - {itemSearched.title}
+                    </p>
+                  </Link>
+                );
+              })}
+              {itemsSearch?.length < 1 && search?.length > 0 && <Spinner />}
+            </Dropdown>
           </div>
-        </MobileFilters>
+          <MobileFilters onClick={() => setShowMobileFilters(true)}>
+            <img
+              src={'/filter.svg'}
+              alt={'filters'}
+              style={{ width: '20px', height: '20px', marginRight: '10px' }}
+            />
+            <span>Filtres</span>
+            <div
+              style={{
+                color: 'black',
+                backgroundColor: '#cacaca',
+                borderRadius: '50%',
+                fontSize: '10px',
+                width: '16px',
+                height: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginLeft: '10px',
+              }}
+            >
+              <span>{categories?.length + brands?.length + sizes?.length + colors?.length}</span>
+            </div>
+          </MobileFilters>
+        </MobileFiltersContainer>
         <Filters>
           <Filter>
             <Dropdown
