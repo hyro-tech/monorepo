@@ -79,7 +79,7 @@ async function updatePlaceById(req, res) {
   } else {
     // Déplacer l'item vers le haut
     await ItemsRepository.updateMany(
-      { place: { $lt: currentPlace, $gte: newPlace } },
+      { place: { $gte: newPlace, $lt: currentPlace } },
       { $inc: { place: 1 } },
     );
   }
