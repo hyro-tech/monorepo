@@ -24,7 +24,7 @@ const StyledItem = styled.div`
   }
 
   ${deviceMedia[deviceSizes.phone]`
-    max-width: 200px;
+    max-width: 160px;
     
     h5 {
       margin-top: 5px;
