@@ -10,13 +10,14 @@ export const Button = styled.button`
   align-items: center;
   font-size: 14px;
   padding: 0 20px;
-  color: black;
-  background-color: ${theme.colors.blueDeep};
+  color: ${(props) => props.color || 'black'};
+  background-color: ${(props) => props.bgColor || theme.colors.blueDeep};
   border: 1px solid ${theme.colors.grayBorder};
 
   ${(props) =>
     props.disabled &&
     `
+        color: black;
         background-color: ${theme.colors.grayBorder};
   `};
 

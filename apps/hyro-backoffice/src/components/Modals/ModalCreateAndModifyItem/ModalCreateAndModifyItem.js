@@ -81,7 +81,7 @@ const Input = styled.input`
   padding: 10px;
   position: relative;
   border: none;
-  border-bottom: 1px solid ${theme.colors.grayBorder};
+  border-bottom: 1px solid ${(props) => (props.error ? theme.colors.red : theme.colors.grayBorder)};
   width: 100%;
   height: 34px;
   outline: none;
@@ -340,8 +340,12 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
         </div>
         {newItem?._id && (
           <div style={{ marginBottom: '20px' }}>
-            <h6>Place:</h6>
-            <Input value={place} onChange={(e) => setPlace(e.target.value)} />
+            <h6>Place: (min: 1 et max: {itemsLength - 1})</h6>
+            <Input
+              value={place}
+              onChange={(e) => setPlace(e.target.value)}
+              error={place < 1 || place >= itemsLength}
+            />
           </div>
         )}
         <div style={{ marginBottom: '20px' }}>
@@ -503,8 +507,16 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
             Fermer
           </Button>
           <Button
-            disabled={!newItem?.title || !categories?.length || !brands?.length}
+            disabled={
+              !newItem?.title ||
+              !categories?.length ||
+              !brands?.length ||
+              place < 1 ||
+              place >= itemsLength
+            }
             onClick={update}
+            color={'white'}
+            bgColor={'green'}
           >
             {isLoading && <Spinner />} {isModify ? 'Modifier' : 'Ajouter'}
           </Button>
