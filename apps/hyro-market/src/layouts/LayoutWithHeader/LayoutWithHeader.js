@@ -1,10 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import Link from 'next/link';
 
-import Navbar from '../../components/Navbar/Navbar';
 import { deviceMedia, deviceSizes } from '../../styles/helper';
-import { PATHS } from '../../utils';
 
 const PageContainer = styled.div`
   height: 100vh;
@@ -51,7 +48,7 @@ const Logo = styled.img`
   top: 20px;
 `;
 
-const LayoutWithHeader = ({ withDressing = true, withBackLink = false, children }) => {
+const LayoutWithHeader = ({ withDressing = true, children }) => {
   return (
     <div>
       <PageContainer>
@@ -62,9 +59,9 @@ const LayoutWithHeader = ({ withDressing = true, withBackLink = false, children 
             </Header>
             <Scratch src={'/scratch.svg'} />
 
-            <Link href={PATHS.HOME}>
+            <a href={'https://www.hyroagency.com/'}>
               <Logo src={'/logo-white.svg'} alt={'logo'} />
-            </Link>
+            </a>
           </>
         )}
 

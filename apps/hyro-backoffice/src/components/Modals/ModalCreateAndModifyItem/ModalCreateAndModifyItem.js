@@ -340,12 +340,8 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
         </div>
         {newItem?._id && (
           <div style={{ marginBottom: '20px' }}>
-            <h6>Place: (min: 1 et max: {itemsLength - 1})</h6>
-            <Input
-              value={place}
-              onChange={(e) => setPlace(e.target.value)}
-              error={place < 1 || place >= itemsLength}
-            />
+            <h6>Place: (min: 1)</h6>
+            <Input value={place} onChange={(e) => setPlace(e.target.value)} error={place < 1} />
           </div>
         )}
         <div style={{ marginBottom: '20px' }}>
@@ -507,13 +503,7 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
             Fermer
           </Button>
           <Button
-            disabled={
-              !newItem?.title ||
-              !categories?.length ||
-              !brands?.length ||
-              place < 1 ||
-              place >= itemsLength
-            }
+            disabled={!newItem?.title || !categories?.length || !brands?.length || place < 1}
             onClick={update}
             color={'white'}
             bgColor={'green'}
