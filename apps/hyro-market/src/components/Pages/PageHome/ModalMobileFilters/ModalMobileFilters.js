@@ -142,7 +142,7 @@ const ModalMobileFilters = ({
 
           {filter === 1 && (
             <div>
-              {hack?.categories?.map((c, index) => (
+              {hack?.categories?.sort()?.map((c, index) => (
                 <Category
                   isFirst={!index}
                   key={`category_${c}`}
@@ -166,7 +166,7 @@ const ModalMobileFilters = ({
 
           {filter === 2 && (
             <div>
-              {hack?.brands?.map((c, index) => (
+              {hack?.brands?.sort()?.map((c, index) => (
                 <Category
                   isFirst={!index}
                   key={`brand${c}`}
@@ -190,7 +190,7 @@ const ModalMobileFilters = ({
 
           {filter === 3 && (
             <div>
-              {hack?.colors?.map((c, index) => (
+              {hack?.colors?.sort()?.map((c, index) => (
                 <Category
                   isFirst={!index}
                   key={`colors${c}x`}

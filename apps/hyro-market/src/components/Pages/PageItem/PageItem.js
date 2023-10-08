@@ -87,8 +87,8 @@ const OthersPictures = styled.div`
   padding: 10px 0;
 
   div {
-    width: ${(props) => (props.big ? 160 : 100)}px;
-    height: ${(props) => (props.big ? 160 : 100)}px;
+    width: ${(props) => (props.big ? 200 : 100)}px;
+    height: ${(props) => (props.big ? 200 : 100)}px;
     background-color: #f3f3f5;
     display: flex;
     align-items: center;
@@ -105,8 +105,8 @@ const OthersPictures = styled.div`
     padding: 20px 20px 40px 20px;
     
     div {
-      width: ${(props) => (props.big ? 120 : 100)}px;
-      height: ${(props) => (props.big ? 120 : 100)}px;
+      width: ${(props) => (props.big ? 160 : 100)}px;
+      height: ${(props) => (props.big ? 160 : 100)}px;
     }
   `};
 `;

@@ -4,6 +4,7 @@ export const sizesType = {
     l: "l",
     xl: "xl",
     xxl: "xxl",
+    40: "40",
     41: "41",
     42: "42",
     43: "43",
@@ -13,6 +14,7 @@ export const sizesType = {
 }
 
 export const sizesShoesType = {
+    40: "40",
     41: "41",
     42: "42",
     43: "43",

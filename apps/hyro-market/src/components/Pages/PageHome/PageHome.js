@@ -318,6 +318,7 @@ const PageHome = ({
             <Dropdown value={'Catégories'}>
               {hack?.categories
                 ?.filter((c) => !categories?.includes(c))
+                ?.sort()
                 .map((category) => (
                   <p key={category} onClick={() => setCategories([...categories, category])}>
                     {category}
@@ -341,6 +342,7 @@ const PageHome = ({
             <Dropdown value={'Marques'}>
               {hack?.brands
                 ?.filter((c) => !brands?.includes(c))
+                ?.sort()
                 .map((brand) => (
                   <p
                     key={brand}
@@ -369,6 +371,7 @@ const PageHome = ({
             <Dropdown value={'Couleurs'}>
               {hack?.colors
                 ?.filter((c) => !colors?.includes(c))
+                ?.sort()
                 .map((color) => (
                   <p key={color} onClick={() => setColors([...colors, color])}>
                     {color}
@@ -434,6 +437,7 @@ const PageHome = ({
             style={{ marginRight: 'auto', marginBottom: '30px' }}
             small
             onClick={() => {
+              reset();
               router.replace('/');
             }}
           >
@@ -451,7 +455,13 @@ const PageHome = ({
             <Pagination
               currentPage={page}
               totalPages={itemsFiltered?.length / perPage}
-              onPageChange={setPage}
+              onPageChange={(p) => {
+                setPage(p);
+                window.scrollTo({
+                  top: 0,
+                  behavior: 'smooth',
+                });
+              }}
             />
           </ItemsContainer>
         </ItemsContent>
