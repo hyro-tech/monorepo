@@ -234,9 +234,7 @@ const PageItem = ({ item, related }) => {
           <div style={{ marginTop: '40px' }}>
             <p>{item?.description}</p>
             <a
-              href={`https://api.whatsapp.com/send?phone=33781530898&text=Hello Hyro, Je voudrais plus d'informations sur la location de cet article: ${
-                item.title
-              } (ref: ${item.reference}). URL: ${process.env.url + router.asPath}`}
+              href={`https://api.whatsapp.com/send?phone=33781530898&text=Hello Hyro, Je voudrais plus d'informations sur la location de cet article: ${item.title} (ref: ${item.reference}). URL: ${process.env.url}${router.asPath}`}
               target={'_blank'}
               rel="noreferrer"
             >
