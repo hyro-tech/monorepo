@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3002",
-    "ngrok": "ngrok http 3002",
+    "dev": "next dev",
+    "ngrok": "ngrok http",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

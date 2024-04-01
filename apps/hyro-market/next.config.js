@@ -8,8 +8,8 @@ module.exports = withCustomBabelConfigFile(
     babelConfigFile: path.resolve('./babel.config.js'),
     cssModules: true,
     env: {
-      url: process.env.URL || 'http://localhost:3002',
-      apiUrl: process.env.API_URL || 'http://localhost:3001/api',
+      url: process.env.URL || 'http://localhost:3000',
+      apiUrl: process.env.API_URL || 'http://localhost:8080/api',
       landingUrl: process.env.LANDING_URL || 'https://www.hyro.agency/',
     },
     experimental: {

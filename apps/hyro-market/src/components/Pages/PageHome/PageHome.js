@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { sizesOutfitsType, sizesShoesType } from 'lib-enums';
@@ -145,11 +145,12 @@ const Search = styled.input`
 
 const PageHome = ({
   hack = {},
-  initialCategories = [],
-  initialBrands = [],
-  initialSizes = [],
-  initialColors = [],
+  categories: initialCategories = [],
+  brands: initialBrands = [],
+  sizes: initialSizes = [],
+  colors: initialColors = [],
 }) => {
+  console.log(initialCategories);
   const router = useRouter();
 
   const items = useSelector((state) => state.items);
@@ -190,11 +191,50 @@ const PageHome = ({
       ?.includes(word?.toLowerCase());
 
   const reset = () => {
-    setCategories(initialCategories);
-    setBrands(initialBrands);
-    setSizes(initialSizes);
-    setColors(initialColors);
+    setCategories([]);
+    setBrands([]);
+    setSizes([]);
+    setColors([]);
   };
+
+  const handleChangeCategories = (category) => {
+    setCategories([...categories, category]);
+  };
+
+  const handleChangeBrand = (brand) => {
+    setBrands([...brands, brand]);
+  };
+
+  const handleChangeColor = (color) => {
+    setColors([...colors, color]);
+  };
+
+  const handleChangeSize = (size) => {
+    router.query.sizes = size;
+    router.push(router);
+    setSizes(sizes?.find((s) => s === size) ? sizes?.filter((s) => s !== size) : [...sizes, size]);
+  };
+
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      router.query.categories = categories.join(',');
+      router.push(router);
+    }
+  }, [categories]);
+
+  useEffect(() => {
+    if (brands && brands.length > 0) {
+      router.query.brands = brands.join(',');
+      router.push(router);
+    }
+  }, [brands]);
+
+  useEffect(() => {
+    if (colors && colors.length > 0) {
+      router.query.colors = colors.join(',');
+      router.push(router);
+    }
+  }, [colors]);
 
   useMemo(() => {
     if (search) {
@@ -234,11 +274,24 @@ const PageHome = ({
     }
 
     setPage(0);
-  }, [categories, brands, sizes, colors]);
+  }, [
+    categories,
+    brands,
+    sizes,
+    colors,
+    initialBrands,
+    initialCategories,
+    initialColors,
+    initialSizes,
+  ]);
 
   useMemo(() => {
     setItemsRendered([...itemsFiltered].slice(page * perPage, page * perPage + perPage));
   }, [page, itemsFiltered]);
+
+  useEffect(() => {
+    console.log({ initialBrands, initialCategories, initialColors, initialSizes });
+  }, [initialBrands, initialCategories, initialColors, initialSizes]);
 
   return (
     <LayoutWithHeader>
@@ -320,7 +373,7 @@ const PageHome = ({
                 ?.filter((c) => !categories?.includes(c))
                 ?.sort()
                 .map((category) => (
-                  <p key={category} onClick={() => setCategories([...categories, category])}>
+                  <p key={category} onClick={() => handleChangeCategories(category)}>
                     {category}
                   </p>
                 ))}
@@ -344,12 +397,7 @@ const PageHome = ({
                 ?.filter((c) => !brands?.includes(c))
                 ?.sort()
                 .map((brand) => (
-                  <p
-                    key={brand}
-                    onClick={() => {
-                      setBrands([...brands, brand]);
-                    }}
-                  >
+                  <p key={brand} onClick={() => handleChangeBrand(brand)}>
                     {brand}
                   </p>
                 ))}
@@ -373,7 +421,7 @@ const PageHome = ({
                 ?.filter((c) => !colors?.includes(c))
                 ?.sort()
                 .map((color) => (
-                  <p key={color} onClick={() => setColors([...colors, color])}>
+                  <p key={color} onClick={() => handleChangeColor(color)}>
                     {color}
                   </p>
                 ))}
@@ -395,13 +443,7 @@ const PageHome = ({
               {Object.keys(sizesOutfitsType).map((size) => (
                 <Size
                   key={size}
-                  onClick={() => {
-                    setSizes(
-                      sizes?.find((s) => s === size)
-                        ? sizes?.filter((s) => s !== size)
-                        : [...sizes, size],
-                    );
-                  }}
+                  onClick={() => handleChangeSize(size)}
                   selected={sizes?.find((s) => s === size)}
                 >
                   {translation(`sizes.${size}`)}

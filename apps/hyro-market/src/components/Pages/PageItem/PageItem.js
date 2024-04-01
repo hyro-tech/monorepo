@@ -10,6 +10,7 @@ import { translation } from '../../../../../../libs/translations';
 import { deviceMedia, deviceSizes } from '../../../styles/helper';
 import { Button } from '../../Buttons/Buttons';
 import Size from '../../Size';
+import { ArrowLeft } from 'react-bootstrap-icons';
 
 const Main = styled.div`
   display: flex;
@@ -129,12 +130,23 @@ const OnlyDesktop = styled.div`
   `};
 `;
 
+const BackButton = styled.div`
+  position: absolute;
+  left: 0;
+  top: -50px;
+  cursor: pointer;
+`;
+
 const PageItem = ({ item, related }) => {
   const router = useRouter();
 
   const [gallery, setGallery] = useState(null);
   const [mainPicture, setMainPicture] = useState(null);
   const [othersPictures, setOthersPictures] = useState([]);
+
+  const handleClickBack = () => {
+    router.back();
+  };
 
   useMemo(() => {
     if (item) {
@@ -164,8 +176,10 @@ const PageItem = ({ item, related }) => {
             />
           )}
         </MainLeftMobile>
-
-        <MainLeft>
+        <MainLeft style={{ position: 'relative' }}>
+          <BackButton onClick={handleClickBack}>
+            <ArrowLeft size={24} />
+          </BackButton>
           <ItemImageContainer>
             <img src={mainPicture?.path} alt={mainPicture?.name} />
           </ItemImageContainer>
@@ -246,7 +260,6 @@ const PageItem = ({ item, related }) => {
             </a>
           </div>
         </MainRight>
-
         <MainLeftMobile>
           {related?.length > 0 && (
             <div style={{ marginTop: '40px' }}>
@@ -265,7 +278,6 @@ const PageItem = ({ item, related }) => {
           )}
         </MainLeftMobile>
       </Main>
-
       <OnlyDesktop>
         {related?.length > 0 && (
           <div style={{ marginTop: '40px' }}>

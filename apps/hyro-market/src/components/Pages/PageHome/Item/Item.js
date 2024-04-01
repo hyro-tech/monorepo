@@ -102,7 +102,7 @@ const Item = ({ item }) => {
 
   return (
     <Link href={`/items/${item._id}`} passHref>
-      <a target="_blank" rel="noopener noreferrer">
+      <a rel="noopener noreferrer">
         <StyledItem>
           <ItemImageContainer>
             <img src={picture?.path} alt={picture?.name} />
