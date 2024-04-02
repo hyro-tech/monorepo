@@ -8,8 +8,8 @@ module.exports = withCustomBabelConfigFile(
     babelConfigFile: path.resolve('./babel.config.js'),
     cssModules: true,
     env: {
-      url: process.env.URL || 'http://localhost:3004',
-      apiUrl: process.env.API_URL || 'http://localhost:3001/api',
+      url: process.env.URL || 'http://localhost:3001',
+      apiUrl: process.env.API_URL || 'http://localhost:8080/api',
     },
     experimental: {
       externalDir: true,

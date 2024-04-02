@@ -1,7 +1,11 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 const configs = {
-  baseUrl: process.env.BASE_URL || 'http://localhost:3001/',
-  authorizedUrls: process.env.AUTHORIZED_URLS || 'http://localhost:3002,http://localhost:3004',
-  port: process.env.PORT || 3001,
+  baseUrl: process.env.BASE_URL || 'http://localhost:8080/',
+  authorizedUrls: process.env.AUTHORIZED_URLS || 'http://localhost:3000,http://localhost:3001',
+  port: process.env.PORT || 8080,
   environment: process.env.ENVIRONMENT || 'local',
   services: {
     bcrypt: {

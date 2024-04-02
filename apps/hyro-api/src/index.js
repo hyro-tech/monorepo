@@ -1,5 +1,5 @@
 import express from 'express';
-
+import dotenv from 'dotenv';
 import serviceExpress from './services/express';
 import * as db from './services/mongodb';
 import configs from './configs';
@@ -7,7 +7,7 @@ import configs from './configs';
 require('esm');
 
 const app = express();
-
+dotenv.config();
 serviceExpress(app);
 
 let retry = 1;
