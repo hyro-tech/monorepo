@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import ImageGallery from 'react-image-gallery';
 import Link from 'next/link';
+import { ArrowLeft } from 'react-bootstrap-icons';
 
 import { getItemsPictures } from '../../../actions/items';
 import LayoutWithHeader from '../../../layouts/LayoutWithHeader/LayoutWithHeader';
@@ -10,7 +11,6 @@ import { translation } from '../../../../../../libs/translations';
 import { deviceMedia, deviceSizes } from '../../../styles/helper';
 import { Button } from '../../Buttons/Buttons';
 import Size from '../../Size';
-import { ArrowLeft } from 'react-bootstrap-icons';
 
 const Main = styled.div`
   display: flex;
