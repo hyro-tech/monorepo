@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { sizesOutfitsType, sizesShoesType } from 'lib-enums';
@@ -150,7 +150,6 @@ const PageHome = ({
   sizes: initialSizes = [],
   colors: initialColors = [],
 }) => {
-  console.log(initialCategories);
   const router = useRouter();
 
   const items = useSelector((state) => state.items);
@@ -170,11 +169,22 @@ const PageHome = ({
 
   const [search, setSearch] = useState('');
 
-  const isInCategories = (item) =>
-    !categories?.length || item.categories?.find((c) => categories.includes(c));
-  const isInBrands = (item) => !brands?.length || item.brands?.find((c) => brands.includes(c));
-  const isInSizes = (item) => !sizes?.length || item.sizes?.find((c) => sizes.includes(c));
-  const isInColors = (item) => !colors?.length || item.colors?.find((c) => colors.includes(c));
+  const isInCategories = useCallback(
+    (item) => !categories?.length || item.categories?.find((c) => categories.includes(c)),
+    [initialCategories, categories],
+  );
+  const isInBrands = useCallback(
+    (item) => !brands?.length || item.brands?.find((c) => brands.includes(c)),
+    [initialBrands, brands],
+  );
+  const isInSizes = useCallback(
+    (item) => !sizes?.length || item.sizes?.find((c) => sizes.includes(c)),
+    [initialSizes, sizes],
+  );
+  const isInColors = useCallback(
+    (item) => !colors?.length || item.colors?.find((c) => colors.includes(c)),
+    [initialColors, colors],
+  );
 
   const searchIsInTitle = (item, word) => item.title?.toLowerCase()?.includes(word?.toLowerCase());
   const searchIsInReference = (item, word) =>
@@ -259,13 +269,22 @@ const PageHome = ({
   }, [search]);
 
   useMemo(() => {
-    if (items) {
-      setItemsFiltered(items);
+    if (
+      initialBrands.length > 0 ||
+      initialSizes.length > 0 ||
+      initialCategories.length > 0 ||
+      initialColors.length > 0
+    ) {
+      return;
+    } else {
+      if (items) {
+        setItemsFiltered(items);
+      }
     }
-  }, [items]);
+  }, [items, initialBrands, initialCategories, initialColors, initialSizes]);
 
   useMemo(() => {
-    if (items) {
+    if (items && router.isReady) {
       setItemsFiltered(
         [...items].filter(
           (item) => isInCategories(item) && isInBrands(item) && isInSizes(item) && isInColors(item),
@@ -283,15 +302,12 @@ const PageHome = ({
     initialCategories,
     initialColors,
     initialSizes,
+    router.query,
   ]);
 
   useMemo(() => {
     setItemsRendered([...itemsFiltered].slice(page * perPage, page * perPage + perPage));
   }, [page, itemsFiltered]);
-
-  useEffect(() => {
-    console.log({ initialBrands, initialCategories, initialColors, initialSizes });
-  }, [initialBrands, initialCategories, initialColors, initialSizes]);
 
   return (
     <LayoutWithHeader>
