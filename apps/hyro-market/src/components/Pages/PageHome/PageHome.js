@@ -167,6 +167,8 @@ const PageHome = ({
   const [itemsRendered, setItemsRendered] = useState([]);
   const [itemsSearch, setItemsSearch] = useState([]);
 
+  console.log(items);
+
   const [search, setSearch] = useState('');
 
   const isInCategories = useCallback(
@@ -220,9 +222,69 @@ const PageHome = ({
   };
 
   const handleChangeSize = (size) => {
-    router.query.sizes = size;
+    if (sizes.includes(size)) {
+      handleRemoveSizes(size);
+      return;
+    }
+
+    setSizes([...sizes, size]);
+  };
+
+  const removeQueryParam = (paramToRemove) => {
+    const { pathname, query } = router;
+    const { [paramToRemove]: _, ...rest } = query;
+    router.push({
+      pathname,
+      query: rest,
+    });
+  };
+
+  const handleRemoveCategories = (category) => {
+    const updateCategories = categories?.filter((c) => c !== category);
+    setCategories(updateCategories);
+    if (updateCategories.length == 0) {
+      removeQueryParam('categories');
+      return;
+    }
+
+    router.query.categories = updateCategories.join(',');
     router.push(router);
-    setSizes(sizes?.find((s) => s === size) ? sizes?.filter((s) => s !== size) : [...sizes, size]);
+  };
+
+  const handleRemoveBrands = (brand) => {
+    const updateBrands = brands?.filter((c) => c !== brand);
+    setBrands(updateBrands);
+    if (updateBrands.length == 0) {
+      removeQueryParam('brands');
+      return;
+    }
+
+    router.query.brands = updateBrands.join(',');
+    router.push(router);
+  };
+
+  const handleRemoveColors = (color) => {
+    const updateColors = colors?.filter((c) => c !== color);
+    setColors(updateColors);
+    if (updateColors.length == 0) {
+      removeQueryParam('colors');
+      return;
+    }
+
+    router.query.colors = updateColors.join(',');
+    router.push(router);
+  };
+
+  const handleRemoveSizes = (size) => {
+    const updateSizes = sizes?.filter((c) => c !== size);
+    setSizes(updateSizes);
+    if (updateSizes.length == 0) {
+      removeQueryParam('sizes');
+      return;
+    }
+
+    router.query.sizes = updateSizes.join(',');
+    router.push(router);
   };
 
   useEffect(() => {
@@ -245,6 +307,13 @@ const PageHome = ({
       router.push(router);
     }
   }, [colors]);
+
+  useEffect(() => {
+    if (sizes && sizes.length > 0) {
+      router.query.sizes = sizes.join(',');
+      router.push(router);
+    }
+  }, [sizes]);
 
   useMemo(() => {
     if (search) {
@@ -400,7 +469,7 @@ const PageHome = ({
                   key={category}
                   content={category}
                   onClose={() => {
-                    setCategories(categories?.filter((c) => c !== category));
+                    handleRemoveCategories(category);
                   }}
                 />
               ))}
@@ -424,7 +493,7 @@ const PageHome = ({
                   key={brand}
                   content={brand}
                   onClose={() => {
-                    setBrands(brands?.filter((c) => c !== brand));
+                    handleRemoveBrands(brand);
                   }}
                 />
               ))}
@@ -447,7 +516,9 @@ const PageHome = ({
                 <Pin
                   key={color}
                   content={color}
-                  onClose={() => setColors((ca) => ca.filter((c) => c !== color))}
+                  onClose={() => {
+                    handleRemoveColors(color);
+                  }}
                 />
               ))}
             </PinsContainer>
@@ -474,13 +545,7 @@ const PageHome = ({
               {Object.keys(sizesShoesType).map((size) => (
                 <Size
                   key={size}
-                  onClick={() =>
-                    setSizes(
-                      sizes?.find((s) => s === size)
-                        ? sizes?.filter((s) => s !== size)
-                        : [...sizes, size],
-                    )
-                  }
+                  onClick={() => handleChangeSize(size)}
                   selected={sizes?.find((s) => s === size)}
                 >
                   {translation(`sizes.${size}`)}
