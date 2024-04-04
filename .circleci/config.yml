@@ -11,7 +11,7 @@ jobs:
             - 'MD5:c9:b3:9d:9b:2d:ac:a7:77:ef:5a:28:ce:eb:d0:e1:52'
       - run:
           name: Update Server Hyro
-          command: ssh ubuntu@13.39.157.132 -o StrictHostKeyChecking=no "cd /home/ubuntu/hyro-monorepo && git fetch && git pull && source ~/.nvm/nvm.sh && nvm use 16 && npm install && chown -R www-data:www-data ."
+          command: ssh root@13.39.157.132 -o StrictHostKeyChecking=no "cd /home/ubuntu/hyro-monorepo && git fetch && git pull && source ~/.nvm/nvm.sh && nvm use 16 && npm install && chown -R www-data:www-data ."
 
 workflows:
   version: 2
