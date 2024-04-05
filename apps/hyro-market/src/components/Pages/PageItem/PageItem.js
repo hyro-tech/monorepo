@@ -137,6 +137,14 @@ const BackButton = styled.div`
   cursor: pointer;
 `;
 
+const BackButtonMobile = styled.div`
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  cursor: pointer;
+  z-index: 99999;
+`;
+
 const PageItem = ({ item, related }) => {
   const router = useRouter();
 
@@ -164,6 +172,9 @@ const PageItem = ({ item, related }) => {
     <LayoutWithHeader withDressing={false} withBackLink={true}>
       <Main>
         <MainLeftMobile>
+          <BackButtonMobile onClick={handleClickBack}>
+            <ArrowLeft size={24} />
+          </BackButtonMobile>
           {gallery && (
             <ImageGallery
               showNav={false}
