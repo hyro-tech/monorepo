@@ -173,7 +173,11 @@ const PageItem = ({ item, related }) => {
       <Main>
         <MainLeftMobile>
           <BackButtonMobile onClick={handleClickBack}>
-            <ArrowLeft size={24} />
+            <img
+              src={'/ic_back-arrow.png'}
+              alt={'filters'}
+              style={{ width: '30px', height: '30px' }}
+            />
           </BackButtonMobile>
           {gallery && (
             <ImageGallery
@@ -189,7 +193,12 @@ const PageItem = ({ item, related }) => {
         </MainLeftMobile>
         <MainLeft style={{ position: 'relative' }}>
           <BackButton onClick={handleClickBack}>
-            <ArrowLeft size={24} />
+            {/* <ArrowLeft size={24} /> */}
+            <img
+              src={'/ic_back-arrow.png'}
+              alt={'filters'}
+              style={{ width: '30px', height: '30px' }}
+            />
           </BackButton>
           <ItemImageContainer>
             <img src={mainPicture?.path} alt={mainPicture?.name} />
