@@ -297,7 +297,7 @@ const PageItem = ({ item, related }) => {
             <OthersPictures big>
               {related.map((relatedItem) => (
                 <Link href={`/items/${relatedItem._id}`} passHref key={relatedItem._id}>
-                  <a target="_blank" rel="noopener noreferrer">
+                  <a rel="noopener noreferrer">
                     <div>
                       <img src={relatedItem?.picture} alt={relatedItem?.picture} />
                     </div>
