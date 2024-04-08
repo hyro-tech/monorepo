@@ -20,6 +20,7 @@ const configs = {
     mongodb: {
       uri:
         process.env.MONGODB_ADDON_URI ||
+        'mongodb://ubvynusx6xv2mvxyky7v:JpPsjB1VrFHSaaK7wV3@bsw0mblrsgwtqiieuhzn-mongodb.services.clever-cloud.com:2054/bsw0mblrsgwtqiieuhzn' ||
         'mongodb://uvjdnyrhyus7vria2ags:j7qFypaC9V9ssktas2F@bq3dmnzqujqvbkilecvz-mongodb.services.clever-cloud.com:2172/bq3dmnzqujqvbkilecvz' ||
         'mongodb://root:password@localhost:27017/local-api?authSource=admin',
     },
