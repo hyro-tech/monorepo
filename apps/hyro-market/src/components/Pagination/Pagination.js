@@ -38,13 +38,13 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
   const goToPreviousPage = () => {
     if (currentPage > 0) {
-      onPageChange(currentPage - 1);
+      onPageChange(Number(currentPage) - 1);
     }
   };
 
   const goToNextPage = () => {
     if (currentPage < totalPages - 1) {
-      onPageChange(currentPage + 1);
+      onPageChange(Number(currentPage) + 1);
     }
   };
 
@@ -72,7 +72,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           active={pageNumber === currentPage}
           onClick={() => onPageChange(pageNumber)}
         >
-          {Math.floor(pageNumber + 1)}
+          {Math.floor(Number(pageNumber) + 1)}
         </PageButton>
       ))}
       {currentPage + 1 < totalPages - 1 && (

@@ -149,6 +149,7 @@ const PageHome = ({
   brands: initialBrands = [],
   sizes: initialSizes = [],
   colors: initialColors = [],
+  page: initialPage = 0,
 }) => {
   const router = useRouter();
 
@@ -161,14 +162,12 @@ const PageHome = ({
   const [sizes, setSizes] = useState(initialSizes);
   const [colors, setColors] = useState(initialColors);
 
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(initialPage);
   const perPage = 12;
+
   const [itemsFiltered, setItemsFiltered] = useState([]);
   const [itemsRendered, setItemsRendered] = useState([]);
   const [itemsSearch, setItemsSearch] = useState([]);
-
-  console.log(items);
-
   const [search, setSearch] = useState('');
 
   const isInCategories = useCallback(
@@ -207,6 +206,7 @@ const PageHome = ({
     setBrands([]);
     setSizes([]);
     setColors([]);
+    setPage(0);
   };
 
   const handleChangeCategories = (category) => {
@@ -230,9 +230,22 @@ const PageHome = ({
     setSizes([...sizes, size]);
   };
 
+  const handleChangePage = (p) => {
+    setPage(Number(p));
+
+    router.query.page = p;
+    router.push(router);
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   const removeQueryParam = (paramToRemove) => {
     const { pathname, query } = router;
     const { [paramToRemove]: _, ...rest } = query;
+
     router.push({
       pathname,
       query: rest,
@@ -284,34 +297,59 @@ const PageHome = ({
     }
 
     router.query.sizes = updateSizes.join(',');
-    router.push(router);
+    router.push({
+      pathname: router.pathname,
+      query: {
+        ...router.query,
+      },
+    });
   };
 
   useEffect(() => {
     if (categories && categories.length > 0) {
       router.query.categories = categories.join(',');
-      router.push(router);
+      router.push({
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+        },
+      });
     }
   }, [categories]);
 
   useEffect(() => {
     if (brands && brands.length > 0) {
       router.query.brands = brands.join(',');
-      router.push(router);
+      router.push({
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+        },
+      });
     }
   }, [brands]);
 
   useEffect(() => {
     if (colors && colors.length > 0) {
       router.query.colors = colors.join(',');
-      router.push(router);
+      router.push({
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+        },
+      });
     }
   }, [colors]);
 
   useEffect(() => {
     if (sizes && sizes.length > 0) {
       router.query.sizes = sizes.join(',');
-      router.push(router);
+      router.push({
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+        },
+      });
     }
   }, [sizes]);
 
@@ -350,7 +388,7 @@ const PageHome = ({
         setItemsFiltered(items);
       }
     }
-  }, [items, initialBrands, initialCategories, initialColors, initialSizes]);
+  }, [items, initialBrands, initialCategories, initialColors, initialSizes, page]);
 
   useMemo(() => {
     if (items && router.isReady) {
@@ -359,24 +397,36 @@ const PageHome = ({
           (item) => isInCategories(item) && isInBrands(item) && isInSizes(item) && isInColors(item),
         ),
       );
-    }
 
-    setPage(0);
+      if (page != 0) {
+        setPage(Number(page));
+        return;
+      }
+
+      setPage(0);
+    }
   }, [
+    items,
     categories,
     brands,
     sizes,
     colors,
+    page,
     initialBrands,
     initialCategories,
     initialColors,
     initialSizes,
+    initialPage,
     router.query,
   ]);
 
   useMemo(() => {
     setItemsRendered([...itemsFiltered].slice(page * perPage, page * perPage + perPage));
   }, [page, itemsFiltered]);
+
+  // useEffect(() => {
+  //   console.log(itemsFiltered);
+  // }, [itemsFiltered]);
 
   return (
     <LayoutWithHeader>
@@ -576,15 +626,9 @@ const PageHome = ({
                 <Item item={item} key={item?._id} />
               ))}
             <Pagination
-              currentPage={page}
+              currentPage={Number(page)}
               totalPages={itemsFiltered?.length / perPage}
-              onPageChange={(p) => {
-                setPage(p);
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth',
-                });
-              }}
+              onPageChange={handleChangePage}
             />
           </ItemsContainer>
         </ItemsContent>
