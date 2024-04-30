@@ -167,13 +167,13 @@ const PageHome = ({
     if (value.length === 0) {
       delete newQuery[key];
       router.replace({ query: newQuery });
-      return;  
+      return;
     }
 
     newQuery[key] = value;
     newQuery.page = 1;
     router.replace({ query: newQuery });
-  }
+  };
 
   const setCategories = (categories) => setFilter('categories', categories.join(','));
   const setBrands = (brands) => setFilter('brands', brands.join(','));
@@ -499,16 +499,31 @@ const PageHome = ({
 
         <ItemsContent>
           <ItemsContainer>
-            {items
-              ?.sort((a, b) => a.place - b.place)
-              ?.map((item) => (
-                <Item item={item} key={item?._id} />
-              ))}
-            <Pagination
-              currentPage={page - 1}
-              totalPages={maxPage}
-              onPageChange={handlePageChange}
-            />
+            {items?.length > 0 && (
+              <>
+                {items
+                  ?.sort((a, b) => a.place - b.place)
+                  ?.map((item) => (
+                    <Item item={item} key={item?._id} />
+                  ))}
+
+                <Pagination
+                  currentPage={page - 1}
+                  totalPages={maxPage}
+                  onPageChange={handlePageChange}
+                />
+              </>
+            )}
+
+            {items?.length == 0 && (
+              <div
+                style={{
+                  padding: `1rem`,
+                }}
+              >
+                Oups ! Aucun produit trouvé. Essayez de modifier vos filtres.
+              </div>
+            )}
           </ItemsContainer>
         </ItemsContent>
       </ContentContainer>
