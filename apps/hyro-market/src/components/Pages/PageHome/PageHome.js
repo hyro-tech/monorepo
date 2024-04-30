@@ -150,12 +150,13 @@ const PageHome = ({
   brands = [],
   sizes = [],
   colors = [],
+  isLoading,
+  error,
 }) => {
   const router = useRouter();
-
   const { data: items, maxPage } = useSelector((state) => state.items);
-
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  console.log(items);
 
   const [itemsSearch, setItemsSearch] = useState([]);
 
@@ -515,13 +516,21 @@ const PageHome = ({
               </>
             )}
 
-            {items?.length == 0 && (
+            {isLoading && (
+              <>
+                <Spinner />
+              </>
+            )}
+
+            {items?.length == 0 && !isLoading && (
               <div
                 style={{
                   padding: `1rem`,
                 }}
               >
-                Oups ! Aucun produit trouvé. Essayez de modifier vos filtres.
+                {error && <>{error}</>}
+
+                {!error && <>Oups ! Aucun produit trouvé. Essayez de modifier vos filtres.</>}
               </div>
             )}
           </ItemsContainer>
