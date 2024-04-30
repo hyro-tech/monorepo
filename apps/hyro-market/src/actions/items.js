@@ -4,14 +4,32 @@ export const GET_ITEMS_SUCCESS = 'GET_ITEMS_SUCCESS';
 export const GET_ITEMS_FAILURE = 'GET_ITEMS_FAILURE';
 
 export async function getItemsFiltered(filter, page) {
+  const params = {
+    page,
+    count: 12,
+  }
+
+  if (filter.categories.length > 0) {
+    params.categories = filter.categories.join(',');
+  }
+
+  if (filter.brands.length > 0) {
+    params.brands = filter.brands.join(',');
+  }
+
+  if (filter.sizes.length > 0) {
+    params.sizes = filter.sizes.join(',');
+  }
+
+  if (filter.colors.length > 0) {
+    params.colors = filter.colors.join(',');
+  }
+
   try {
     const items = await callApi({
       method: 'GET',
       url: `/items/paginated`,
-      params: {
-        page,
-        count: 12,
-      },
+      params,
     });
 
     return {

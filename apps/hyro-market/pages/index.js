@@ -12,8 +12,8 @@ const Home = ({ page, categories, brands, sizes, colors }) => {
 
   useEffect(() => {
     getHack().then(setHack);
-    dispatch(getItemsFiltered({}, page));
-  }, [page]);
+    dispatch(getItemsFiltered({ categories, brands, sizes, colors }, page));
+  }, [page, categories, brands, sizes, colors]);
 
   return (
     <PageHome page={page} hack={hack} categories={categories} brands={brands} sizes={sizes} colors={colors} />

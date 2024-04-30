@@ -5,6 +5,7 @@ import { ItemsRepository } from '../../repositories';
 import { S3Service } from '../../services';
 import { getSecondUtilEndOfDay } from '../../utils';
 import { getItemsModel } from '../../models';
+import { isPositiveInteger } from '../../services/number';
 
 async function getAll(req, res) {
   const items = await ItemsRepository.getAll();
@@ -16,24 +17,50 @@ async function getAllPaginated(req, res) {
   const page = req.query.page ? Number(req.query.page) : 1;
   const count = req.query.count ? Number(req.query.count) : 10;
 
-  if (page <= 0 || !Number.isInteger(page)) {
+  if (!isPositiveInteger(page)) {
     return res
       .status(httpStatus.UNPROCESSABLE_ENTITY)
       .json({ error: 'page should be a positive integer!' });
   }
 
-  if (count <= 0 || !Number.isInteger(count)) {
+  if (!isPositiveInteger(count)) {
     return res
       .status(httpStatus.UNPROCESSABLE_ENTITY)
       .json({ error: 'count should be a positive integer!' });
   }
 
+  const categories = req.query.categories ? req.query.categories.split(',') : [];
+  const brands = req.query.brands ? req.query.brands.split(',') : [];
+  const sizes = req.query.sizes ? req.query.sizes.split(',') : [];
+  const colors = req.query.colors ? req.query.colors.split(',') : [];
+
   const limit = count;
   const skip = (page - 1) * count;
 
+  const filter = {};
+
+  if (categories.length > 0) {
+    filter.categories = { $in: categories };
+  }
+
+  if (brands.length > 0) {
+    filter.brands = { $in: brands };
+  }
+
+  if (sizes.length > 0) {
+    filter.sizes = { $in: sizes };
+  }
+
+  if (colors.length > 0) {
+    filter.colors = { $in: colors };
+  }
+
   const ItemsModel = getItemsModel();
-  const data = await ItemsModel.find({}).limit(limit).skip(skip).sort({ place: 1 }).lean();
-  const allDataCount = await ItemsModel.count();
+
+  const [data, allDataCount] = await Promise.all([
+    ItemsModel.find(filter).limit(limit).skip(skip).sort({ place: 1 }).lean(),
+    ItemsModel.find(filter).count(),
+  ]);
 
   const maxPage = Math.ceil(allDataCount / count);
 

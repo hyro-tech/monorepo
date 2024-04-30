@@ -146,10 +146,10 @@ const Search = styled.input`
 const PageHome = ({
   page = 1,
   hack = {},
-  categories: initialCategories = [],
-  brands: initialBrands = [],
-  sizes: initialSizes = [],
-  colors: initialColors = [],
+  categories = [],
+  brands = [],
+  sizes = [],
+  colors = [],
 }) => {
   const router = useRouter();
 
@@ -157,34 +157,28 @@ const PageHome = ({
 
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  const [categories, setCategories] = useState(initialCategories);
-  const [brands, setBrands] = useState(initialBrands);
-  const [sizes, setSizes] = useState(initialSizes);
-  const [colors, setColors] = useState(initialColors);
-
-  const perPage = 12;
-  const [itemsFiltered, setItemsFiltered] = useState([]);
-  const [itemsRendered, setItemsRendered] = useState([]);
   const [itemsSearch, setItemsSearch] = useState([]);
 
   const [search, setSearch] = useState('');
 
-  const isInCategories = useCallback(
-    (item) => !categories?.length || item.categories?.find((c) => categories.includes(c)),
-    [initialCategories, categories],
-  );
-  const isInBrands = useCallback(
-    (item) => !brands?.length || item.brands?.find((c) => brands.includes(c)),
-    [initialBrands, brands],
-  );
-  const isInSizes = useCallback(
-    (item) => !sizes?.length || item.sizes?.find((c) => sizes.includes(c)),
-    [initialSizes, sizes],
-  );
-  const isInColors = useCallback(
-    (item) => !colors?.length || item.colors?.find((c) => colors.includes(c)),
-    [initialColors, colors],
-  );
+  const setFilter = (key, value) => {
+    const newQuery = { ...router.query };
+
+    if (value.length === 0) {
+      delete newQuery[key];
+      router.replace({ query: newQuery });
+      return;  
+    }
+
+    newQuery[key] = value;
+    newQuery.page = 1;
+    router.replace({ query: newQuery });
+  }
+
+  const setCategories = (categories) => setFilter('categories', categories.join(','));
+  const setBrands = (brands) => setFilter('brands', brands.join(','));
+  const setSizes = (sizes) => setFilter('sizes', sizes.join(','));
+  const setColors = (colors) => setFilter('colors', colors.join(','));
 
   const searchIsInTitle = (item, word) => item.title?.toLowerCase()?.includes(word?.toLowerCase());
   const searchIsInReference = (item, word) =>
@@ -285,34 +279,6 @@ const PageHome = ({
     router.push(router);
   };
 
-  useEffect(() => {
-    if (categories && categories.length > 0) {
-      router.query.categories = categories.join(',');
-      router.push(router);
-    }
-  }, [categories]);
-
-  useEffect(() => {
-    if (brands && brands.length > 0) {
-      router.query.brands = brands.join(',');
-      router.push(router);
-    }
-  }, [brands]);
-
-  useEffect(() => {
-    if (colors && colors.length > 0) {
-      router.query.colors = colors.join(',');
-      router.push(router);
-    }
-  }, [colors]);
-
-  useEffect(() => {
-    if (sizes && sizes.length > 0) {
-      router.query.sizes = sizes.join(',');
-      router.push(router);
-    }
-  }, [sizes]);
-
   useMemo(() => {
     if (search) {
       const words = search.split(' ');
@@ -334,45 +300,6 @@ const PageHome = ({
       setItemsSearch([]);
     }
   }, [search]);
-
-  useMemo(() => {
-    if (
-      initialBrands.length > 0 ||
-      initialSizes.length > 0 ||
-      initialCategories.length > 0 ||
-      initialColors.length > 0
-    ) {
-      return;
-    } else {
-      if (items) {
-        setItemsFiltered(items);
-      }
-    }
-  }, [items, initialBrands, initialCategories, initialColors, initialSizes]);
-
-  useMemo(() => {
-    if (items && router.isReady) {
-      setItemsFiltered(
-        [...items].filter(
-          (item) => isInCategories(item) && isInBrands(item) && isInSizes(item) && isInColors(item),
-        ),
-      );
-    }
-  }, [
-    categories,
-    brands,
-    sizes,
-    colors,
-    initialBrands,
-    initialCategories,
-    initialColors,
-    initialSizes,
-    router.query,
-  ]);
-
-  useMemo(() => {
-    setItemsRendered(itemsFiltered);
-  }, [page, itemsFiltered]);
 
   function handlePageChange(page) {
     router.replace({
@@ -572,7 +499,7 @@ const PageHome = ({
 
         <ItemsContent>
           <ItemsContainer>
-            {itemsRendered
+            {items
               ?.sort((a, b) => a.place - b.place)
               ?.map((item) => (
                 <Item item={item} key={item?._id} />
