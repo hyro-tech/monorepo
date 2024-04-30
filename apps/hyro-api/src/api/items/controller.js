@@ -4,11 +4,43 @@ import { v4 as uuidv4 } from 'uuid';
 import { ItemsRepository } from '../../repositories';
 import { S3Service } from '../../services';
 import { getSecondUtilEndOfDay } from '../../utils';
+import { getItemsModel } from '../../models';
 
 async function getAll(req, res) {
   const items = await ItemsRepository.getAll();
 
   return res.send(items);
+}
+
+async function getAllPaginated(req, res) {
+  const page = req.query.page ? Number(req.query.page) : 1;
+  const count = req.query.count ? Number(req.query.count) : 10;
+
+  if (page <= 0 || !Number.isInteger(page)) {
+    return res
+      .status(httpStatus.UNPROCESSABLE_ENTITY)
+      .json({ error: 'page should be a positive integer!' });
+  }
+
+  if (count <= 0 || !Number.isInteger(count)) {
+    return res
+      .status(httpStatus.UNPROCESSABLE_ENTITY)
+      .json({ error: 'count should be a positive integer!' });
+  }
+
+  const limit = count;
+  const skip = (page - 1) * count;
+
+  const ItemsModel = getItemsModel();
+  const data = await ItemsModel.find({}).limit(limit).skip(skip).sort({ place: 1 }).lean();
+  const allDataCount = await ItemsModel.count();
+
+  const maxPage = Math.ceil(allDataCount / count);
+
+  res.send({
+    data,
+    maxPage,
+  });
 }
 
 async function getFiltered(req, res) {
@@ -175,6 +207,7 @@ async function removePicture(req, res) {
 export default {
   create,
   getAll,
+  getAllPaginated,
   getFiltered,
   getRelatedItemsById,
   getPictures,

@@ -3,12 +3,15 @@ import callApi from '../middlewares/callApi';
 export const GET_ITEMS_SUCCESS = 'GET_ITEMS_SUCCESS';
 export const GET_ITEMS_FAILURE = 'GET_ITEMS_FAILURE';
 
-export async function getItemsFiltered(filter) {
+export async function getItemsFiltered(filter, page) {
   try {
     const items = await callApi({
       method: 'GET',
-      url: `/items/all`,
-      query: filter,
+      url: `/items/paginated`,
+      params: {
+        page,
+        count: 12,
+      },
     });
 
     return {
