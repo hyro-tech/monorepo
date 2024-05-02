@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import styled from 'styled-components';
@@ -116,10 +117,11 @@ const Item = ({ item, i, select }) => {
   );
 };
 
-const Items = () => {
+const Items = ({ page }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
-  const items = useSelector((store) => store.items);
+  const { data: items, maxPage } = useSelector((store) => store.items);
 
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -128,13 +130,17 @@ const Items = () => {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    dispatch(getItemsFiltered());
+    dispatch(getItemsFiltered(page));
+  }, [page]);
 
+  useEffect(() => {
     getHack().then(setHack);
   }, []);
 
-  const [page, setPage] = useState(0);
-  const perPage = 9;
+  const setPage = (newPage) => {
+    const newQuery = { ...router.query, page: newPage };
+    router.replace({ query: newQuery });
+  }
 
   const [itemsRendered, setItemsRendered] = useState([]);
 
@@ -171,7 +177,7 @@ const Items = () => {
           ),
         ),
       );
-      setPage(0);
+      setPage(1);
     } else {
       setItemsRendered(items);
     }
@@ -212,16 +218,14 @@ const Items = () => {
       </Row>
 
       {itemsRendered
-        ?.slice(page * perPage, page * perPage + perPage)
-        ?.sort((a, b) => a.place - b.place)
         ?.map((item, i) => (
           <Item item={item} key={item._id} i={i} select={setSelectedItem} />
         ))}
 
       <Pagination
-        currentPage={page}
-        totalPages={Math.floor(itemsRendered?.length / perPage)}
-        onPageChange={setPage}
+        currentPage={page - 1}
+        totalPages={maxPage}
+        onPageChange={page => setPage(page + 1)}
       />
 
       {selectedItem && (
@@ -235,5 +239,13 @@ const Items = () => {
     </LayoutWithSidebar>
   );
 };
+
+export function getServerSideProps({ query }) {
+  return {
+    props: {
+      page: Number(query.page) || 1,
+    },
+  };
+}
 
 export default Items;

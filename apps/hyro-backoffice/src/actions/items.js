@@ -81,15 +81,20 @@ export async function deleteItem(itemId) {
 export const GET_ITEMS_SUCCESS = 'GET_ITEMS_SUCCESS';
 export const GET_ITEMS_FAILURE = 'GET_ITEMS_FAILURE';
 
-export async function getItemsFiltered(filter) {
+export async function getItemsFiltered(page) {
+  const params = {
+    page,
+    count: 9,
+  };
+
   try {
     const token = getCookie(COOKIES_NAMES.token);
 
     if (token) {
       const items = await callApi({
         method: 'GET',
-        url: `/items/all`,
-        query: filter,
+        url: `/items/paginated`,
+        params,
       });
 
       return {
