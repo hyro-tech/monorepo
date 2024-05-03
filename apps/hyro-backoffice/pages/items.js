@@ -183,6 +183,15 @@ const Items = ({ page }) => {
     }
   }, [search]);
 
+  const handleCloseModal = () => {
+    setSelectedItem(null);
+  }
+  
+  const handleFinishMutation = () => {
+    setSelectedItem(null);
+    setPage(1);
+  } 
+
   return (
     <LayoutWithSidebar path={PATHS.ITEMS}>
       <Actions>
@@ -233,7 +242,8 @@ const Items = ({ page }) => {
           hack={hack}
           item={selectedItem}
           itemsLength={items?.length}
-          handleClose={() => setSelectedItem(null)}
+          handleClose={handleCloseModal}
+          onFinishMutation={handleFinishMutation}
         />
       )}
     </LayoutWithSidebar>

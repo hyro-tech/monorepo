@@ -153,9 +153,7 @@ const Pin = ({ content, onClose }) => {
   );
 };
 
-const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
-  const dispatch = useDispatch();
-
+const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose, onFinishMutation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [place, setPlace] = useState(item?.place || itemsLength);
@@ -211,76 +209,86 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
     }
   };
 
-  const update = async () => {
-    if (!isLoading) {
+  const create = async () => {
+    if (isLoading) {
+      return;
+    }
+
+    try {
       setIsLoading(true);
-      for await (const picToDel of picturesToDelete) {
-        await removeItemsPicture(item._id, picToDel);
+      const createAction = await createItem(
+        removeNullInObject({
+          title: newItem?.title,
+          reference: newItem?.reference,
+          price: parseInt(newItem?.price, 10),
+          rental_price: parseInt(newItem?.rental_price, 10),
+          commentary: newItem?.commentary,
+          categories,
+          brands,
+          sizes,
+          colors,
+        }),
+      );
+      const { response } = createAction;
+
+      if (response) {
+        const picturesToUpload = pictures?.filter((p) => !p._id);
+        for await (const pic of picturesToUpload) {
+          const body = new FormData();
+          body.append('file', pic.path);
+          await addItemsPicture(response?._id, body);
+        }
       }
 
-      if (item._id) {
-        dispatch(
-          updateItem(item._id, {
-            title: newItem?.title,
-            reference: newItem?.reference,
-            price: parseInt(newItem?.price, 10),
-            rental_price: parseInt(newItem?.rental_price, 10),
-            commentary: newItem?.commentary,
-            related_items: newItem?.related_items || '',
-            categories,
-            brands,
-            sizes,
-            colors,
-          }),
-        )
-          .then(async () => {
-            const picturesToUpload = pictures?.filter((p) => !p._id);
-            for await (const pic of picturesToUpload) {
-              const body = new FormData();
-              body.append('file', pic.path);
-              await addItemsPicture(item._id, body);
-            }
-            setIsLoading(false);
-            toast.success('Article modifié');
-            if (item?.place !== place) {
-              await dispatch(updateItemPlace(item._id, place));
-              toast.success("Place de l'article mis à jour");
-            }
-            handleClose();
-          })
-          .catch((err) => toast.error(err));
-      } else {
-        dispatch(
-          createItem(
-            removeNullInObject({
-              title: newItem?.title,
-              reference: newItem?.reference,
-              price: parseInt(newItem?.price, 10),
-              rental_price: parseInt(newItem?.rental_price, 10),
-              commentary: newItem?.commentary,
-              categories,
-              brands,
-              sizes,
-              colors,
-            }),
-          ),
-        )
-          .then(async ({ response }) => {
-            if (response) {
-              const picturesToUpload = pictures?.filter((p) => !p._id);
-              for await (const pic of picturesToUpload) {
-                const body = new FormData();
-                body.append('file', pic.path);
-                await addItemsPicture(response?._id, body);
-              }
-            }
-            setIsLoading(false);
-            toast.success('Article ajouté');
-            await dispatch(updateItemPlace(response._id, place));
-            handleClose();
-          })
-          .catch((err) => toast.error(err));
+      await updateItemPlace(response._id, place);
+
+      setIsLoading(false);
+      toast.success('Article ajouté');
+      onFinishMutation();
+    } catch (error) {
+      toast.error(err);
+    }
+  }
+
+  const update = async (id) => {
+    if (isLoading) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      for await (const picToDel of picturesToDelete) {
+        await removeItemsPicture(id, picToDel);
       }
+
+      await updateItem(item._id, {
+        title: newItem?.title,
+        reference: newItem?.reference,
+        price: parseInt(newItem?.price, 10),
+        rental_price: parseInt(newItem?.rental_price, 10),
+        commentary: newItem?.commentary,
+        related_items: newItem?.related_items || '',
+        categories,
+        brands,
+        sizes,
+        colors,
+      });
+
+      const picturesToUpload = pictures?.filter((p) => !p._id);
+      for await (const pic of picturesToUpload) {
+        const body = new FormData();
+        body.append('file', pic.path);
+        await addItemsPicture(item._id, body);
+      }
+      setIsLoading(false);
+      toast.success('Article modifié');
+      if (item?.place !== place) {
+        await updateItemPlace(item._id, place)
+        toast.success("Place de l'article mis à jour");
+      }
+      onFinishMutation();
+    } catch (error) {
+      toast.error(err);
     }
   };
 
@@ -504,7 +512,7 @@ const ModalCreateAndModifyItem = ({ hack, item, itemsLength, handleClose }) => {
           </Button>
           <Button
             disabled={!newItem?.title || !categories?.length || !brands?.length || place < 1}
-            onClick={update}
+            onClick={() => item._id ? update(item._id) : create()}
             color={'white'}
             bgColor={'green'}
           >

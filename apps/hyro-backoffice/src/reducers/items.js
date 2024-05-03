@@ -23,21 +23,21 @@ export function itemsReducers(state = { data: [], maxPage: 1 }, action) {
       if (!action.response) return state;
       return {
         ...state,
-        data: state.map((item) => (item._id === action.response._id ? action.response : item)),
+        data: state.data.map((item) => (item._id === action.response._id ? action.response : item)),
       };
     }
     case DELETE_ITEM_SUCCESS: {
       if (!action.response?._id) return state;
       return {
         ...state,
-        data: state.filter((item) => item._id !== action.response._id),
+        data: state.data.filter((item) => item._id !== action.response._id),
       };
     }
     case CREATE_ITEM_SUCCESS: {
       if (!action.response) return state;
       return {
         ...state,
-        data: [action.response, ...state],
+        data: [action.response, ...state.data],
       };
     }
     default:
