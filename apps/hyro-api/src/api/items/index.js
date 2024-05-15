@@ -14,6 +14,8 @@ router.get('/all', wrapper(itemsController.getAll));
 
 router.get('/paginated', wrapper(itemsController.getAllPaginated));
 
+router.get('/all/search', wrapper(itemsController.searchItems));
+
 router.get('/:itemId', wrapper(itemsController.getById));
 
 router.get('/:itemId/related', wrapper(itemsController.getRelatedItemsById));

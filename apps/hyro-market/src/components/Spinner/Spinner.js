@@ -4,6 +4,7 @@ import BootstrapSpinner from 'react-bootstrap/Spinner';
 
 const StyledSpinner = styled(BootstrapSpinner)`
   margin-right: 10px;
+  padding: 1rem;
 `;
 
 const Spinner = ({ small }) => {

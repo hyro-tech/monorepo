@@ -3,11 +3,34 @@ import callApi from '../middlewares/callApi';
 export const GET_ITEMS_SUCCESS = 'GET_ITEMS_SUCCESS';
 export const GET_ITEMS_FAILURE = 'GET_ITEMS_FAILURE';
 
+export async function getItemsByQuery(q) {
+  const params = {
+    q,
+  };
+
+  try {
+    const items = await callApi({
+      method: 'GET',
+      url: `/items/all/search`,
+      params,
+    });
+
+    return {
+      type: GET_ITEMS_SUCCESS,
+      response: items,
+    };
+  } catch (err) {
+    return {
+      type: GET_ITEMS_FAILURE,
+    };
+  }
+}
+
 export async function getItemsFiltered(filter, page) {
   const params = {
     page,
     count: 12,
-  }
+  };
 
   if (filter.categories.length > 0) {
     params.categories = filter.categories.join(',');

@@ -16,6 +16,8 @@ import Size from '../../Size';
 import { Button } from '../../Buttons/Buttons';
 import ModalMobileFilters from './ModalMobileFilters/ModalMobileFilters';
 import Spinner from '../../Spinner/Spinner';
+import { useDebounce } from '../../../hooks/useDebounce';
+import { GET_ITEMS_SUCCESS, getItemsByQuery } from '../../../actions/items';
 
 const ContentContainer = styled.div`
   display: flex;
@@ -156,11 +158,13 @@ const PageHome = ({
   const router = useRouter();
   const { data: items, maxPage } = useSelector((state) => state.items);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-  console.log(items);
+  const [isLoadingSearch, setIsLoadingSearch] = useState(true);
+  // console.log(items);
 
   const [itemsSearch, setItemsSearch] = useState([]);
 
   const [search, setSearch] = useState('');
+  const searchQuery = useDebounce(search, 500);
 
   const setFilter = (key, value) => {
     const newQuery = { ...router.query };
@@ -280,27 +284,39 @@ const PageHome = ({
     router.push(router);
   };
 
-  useMemo(() => {
-    if (search) {
-      const words = search.split(' ');
+  useEffect(() => {
+    if (searchQuery) {
+      const fetchingItemsByQuery = async () => {
+        setIsLoadingSearch(true);
 
-      setItemsSearch(
-        items
-          ?.filter((item) =>
-            words?.some(
-              (w) =>
-                searchIsInReference(item, w) ||
-                searchIsInBrands(item, w) ||
-                searchIsInCategory(item, w) ||
-                searchIsInTitle(item, w),
-            ),
-          )
-          .slice(0, 20),
-      );
+        try {
+          const response = await getItemsByQuery(searchQuery);
+
+          if (response.type == GET_ITEMS_SUCCESS) {
+            setIsLoadingSearch(false);
+
+            if (response.length <= 0) {
+              setItemsSearch([]);
+              return;
+            }
+            setItemsSearch(response.response || []);
+            return;
+          }
+
+          setItemsSearch([]);
+          setIsLoadingSearch(false);
+        } catch (error) {
+          setItemsSearch([]);
+          setIsLoadingSearch(false);
+        }
+      };
+
+      fetchingItemsByQuery();
     } else {
       setItemsSearch([]);
+      setIsLoadingSearch(false);
     }
-  }, [search]);
+  }, [searchQuery]);
 
   function handlePageChange(page) {
     router.replace({
@@ -331,7 +347,14 @@ const PageHome = ({
                   </Link>
                 );
               })}
-              {itemsSearch?.length < 1 && search?.length > 0 && <Spinner />}
+
+              {isLoadingSearch && (
+                <>
+                  <Spinner />
+                </>
+              )}
+
+              {!isLoadingSearch && itemsSearch.length <= 0 && <>pas trouvé</>}
             </Dropdown>
           </div>
           <MobileFilters onClick={() => setShowMobileFilters(true)}>
@@ -379,7 +402,16 @@ const PageHome = ({
                   </Link>
                 );
               })}
-              {itemsSearch?.length < 1 && search?.length > 0 && <Spinner />}
+              {isLoadingSearch && (
+                <>
+                  <Spinner />
+                </>
+              )}
+
+              {!isLoadingSearch && itemsSearch.length <= 0 && searchQuery && (
+                <div style={{ padding: '0.5rem' }}>pas trouvé</div>
+              )}
+              {/* {itemsSearch?.length < 1 && search?.length > 0 && <Spinner />} */}
             </Dropdown>
           </Filter>
           <Filter>

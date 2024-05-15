@@ -69,6 +69,14 @@ function updateMany(filter, changes) {
   return ItemsModel.updateMany(filter, changes).lean();
 }
 
+function searchItem(q) {
+  const ItemsModel = getItemsModel();
+
+  return ItemsModel.find({ $text: { $search: q } })
+    .limit(10)
+    .lean();
+}
+
 export const ItemsRepository = {
   get,
   createItem,
@@ -80,4 +88,5 @@ export const ItemsRepository = {
   getByReference,
   updateById,
   updateMany,
+  searchItem,
 };

@@ -83,6 +83,8 @@ const ItemsSchema = new Schema(
   { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }, versionKey: false },
 );
 
+ItemsSchema.index({ title: 'text' });
+
 let ItemsModel;
 export const connectItemsModel = () => {
   ItemsModel = model('items', ItemsSchema);

@@ -123,7 +123,7 @@ const Dropdown = ({ toggle, value, small, disabled, children }) => {
         <MenuWrapper hidden={!React.Children?.toArray(children)?.length}>
           <BootstrapDropdown.Menu as={CustomMenu} small={small} value={value}>
             <ul className="list-unstyled">
-              <div className="mt-2" />
+              {/* <div className="mt-2" /> */}
               {React.Children?.toArray(children)?.map((child, index) => (
                 <BootstrapDropdown.Item eventKey={index} active={child === value} key={index}>
                   {child}

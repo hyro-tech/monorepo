@@ -231,6 +231,14 @@ async function removePicture(req, res) {
   return res.send(updatedItem);
 }
 
+async function searchItems(req, res) {
+  const q = req.query.q;
+
+  const items = await ItemsRepository.searchItem(q);
+
+  return res.send(items);
+}
+
 export default {
   create,
   getAll,
@@ -244,4 +252,5 @@ export default {
   removePicture,
   updateById,
   updatePlaceById,
+  searchItems,
 };
