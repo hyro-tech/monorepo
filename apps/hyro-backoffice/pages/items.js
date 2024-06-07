@@ -16,6 +16,7 @@ import { translation } from '../../../libs/translations';
 import { getHack } from '../src/actions/hack';
 import ModalConfirm from '../src/components/Modals/ModalConfirm/ModalConfirm';
 import { colors } from '../src/styles/theme';
+import { useDebounce } from '../src/hooks/useDebounce';
 
 const Picture = styled.img`
   width: 80px;
@@ -126,12 +127,13 @@ const Items = ({ page }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   const [hack, setHack] = useState(null);
-
+  const [isLoadingSearch, setIsLoadingSearch] = useState(true);
   const [search, setSearch] = useState('');
+  const searchQuery = useDebounce(search, 500);
 
   useEffect(() => {
-    dispatch(getItemsFiltered(page));
-  }, [page]);
+    dispatch(getItemsFiltered(page, searchQuery));
+  }, [page, searchQuery]);
 
   useEffect(() => {
     getHack().then(setHack);
@@ -140,7 +142,7 @@ const Items = ({ page }) => {
   const setPage = (newPage) => {
     const newQuery = { ...router.query, page: newPage };
     router.replace({ query: newQuery });
-  }
+  };
 
   const [itemsRendered, setItemsRendered] = useState([]);
 
@@ -163,34 +165,34 @@ const Items = ({ page }) => {
   }, [items]);
 
   useMemo(() => {
-    if (search) {
-      const words = search.split(' ');
+    if (searchQuery) {
+      // const words = search.split(' ');
 
-      setItemsRendered(
-        items?.filter((item) =>
-          words?.some(
-            (w) =>
-              isInReference(item, w) ||
-              isInBrands(item, w) ||
-              isInCategory(item, w) ||
-              isInTitle(item, w),
-          ),
-        ),
-      );
+      // setItemsRendered(
+      //   items?.filter((item) =>
+      //     words?.some(
+      //       (w) =>
+      //         isInReference(item, w) ||
+      //         isInBrands(item, w) ||
+      //         isInCategory(item, w) ||
+      //         isInTitle(item, w),
+      //     ),
+      //   ),
+      // );
       setPage(1);
     } else {
       setItemsRendered(items);
     }
-  }, [search]);
+  }, [searchQuery]);
 
   const handleCloseModal = () => {
     setSelectedItem(null);
-  }
-  
+  };
+
   const handleFinishMutation = () => {
     setSelectedItem(null);
     setPage(1);
-  } 
+  };
 
   return (
     <LayoutWithSidebar path={PATHS.ITEMS}>
@@ -226,15 +228,14 @@ const Items = ({ page }) => {
         <Col>Actions</Col>
       </Row>
 
-      {itemsRendered
-        ?.map((item, i) => (
-          <Item item={item} key={item._id} i={i} select={setSelectedItem} />
-        ))}
+      {itemsRendered?.map((item, i) => (
+        <Item item={item} key={item._id} i={i} select={setSelectedItem} />
+      ))}
 
       <Pagination
         currentPage={page - 1}
         totalPages={maxPage}
-        onPageChange={page => setPage(page + 1)}
+        onPageChange={(page) => setPage(page + 1)}
       />
 
       {selectedItem && (

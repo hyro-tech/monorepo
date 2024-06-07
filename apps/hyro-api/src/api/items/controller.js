@@ -16,6 +16,7 @@ async function getAll(req, res) {
 async function getAllPaginated(req, res) {
   const page = req.query.page ? Number(req.query.page) : 1;
   const count = req.query.count ? Number(req.query.count) : 10;
+  const q = req.query.q ? req.query.q : '';
 
   if (!isPositiveInteger(page)) {
     return res
@@ -58,7 +59,14 @@ async function getAllPaginated(req, res) {
   const ItemsModel = getItemsModel();
 
   const [data, allDataCount] = await Promise.all([
-    ItemsModel.find(filter).limit(limit).skip(skip).sort({ place: 1 }).lean(),
+    q != ''
+      ? ItemsModel.find(filter)
+          .limit(limit)
+          .skip(skip)
+          .sort({ place: 1 })
+          .find({ $text: { $search: q } })
+          .lean()
+      : ItemsModel.find(filter).limit(limit).skip(skip).sort({ place: 1 }).lean(),
     ItemsModel.find(filter).count(),
   ]);
 
