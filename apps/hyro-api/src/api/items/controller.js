@@ -79,7 +79,7 @@ async function getFiltered(req, res) {
 async function getRelatedItemsById(req, res) {
   const item = await ItemsRepository.getById(req.params.itemId);
 
-  console.log(item);
+  // console.log(item);
 
   if (!item || !item.related_items || item.related_items.split(',').length < 1) {
     return res.status(httpStatus.NOT_FOUND).end();

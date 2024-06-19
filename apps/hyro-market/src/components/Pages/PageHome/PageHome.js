@@ -354,7 +354,7 @@ const PageHome = ({
                 </>
               )}
 
-              {!isLoadingSearch && itemsSearch.length <= 0 && <>pas trouvé</>}
+              {!isLoadingSearch && itemsSearch.length <= 0 && <>Aucun résultat</>}
             </Dropdown>
           </div>
           <MobileFilters onClick={() => setShowMobileFilters(true)}>
@@ -409,7 +409,7 @@ const PageHome = ({
               )}
 
               {!isLoadingSearch && itemsSearch.length <= 0 && searchQuery && (
-                <div style={{ padding: '0.5rem' }}>pas trouvé</div>
+                <div style={{ padding: '0.5rem' }}>Aucun résultat</div>
               )}
               {/* {itemsSearch?.length < 1 && search?.length > 0 && <Spinner />} */}
             </Dropdown>
@@ -562,7 +562,7 @@ const PageHome = ({
               >
                 {error && <>{error}</>}
 
-                {!error && <>Oups ! Aucun produit trouvé. Essayez de modifier vos filtres.</>}
+                {!error && <>Aucun résultat</>}
               </div>
             )}
           </ItemsContainer>

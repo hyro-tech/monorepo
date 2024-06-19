@@ -83,7 +83,7 @@ const ItemsSchema = new Schema(
   { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }, versionKey: false },
 );
 
-ItemsSchema.index({ title: 'text' });
+ItemsSchema.index({ '$**': 'text' });
 
 let ItemsModel;
 export const connectItemsModel = () => {
