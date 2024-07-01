@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { sizesOutfitsType, sizesShoesType } from 'lib-enums';
@@ -18,6 +18,7 @@ import ModalMobileFilters from './ModalMobileFilters/ModalMobileFilters';
 import Spinner from '../../Spinner/Spinner';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { GET_ITEMS_SUCCESS, getItemsByQuery } from '../../../actions/items';
+import { useClickOutside } from '../../../hooks/useClickOutside';
 
 const ContentContainer = styled.div`
   display: flex;
@@ -76,6 +77,7 @@ const Filters = styled.div`
   width: 25%;
   min-width: 300px;
   padding: 0 20px;
+  position: relative;
 
   ${deviceMedia[deviceSizes.phone]`
     display: none;
@@ -128,6 +130,10 @@ const SizesContainer = styled.div`
   gap: 5px;
 `;
 
+const SearchWrapper = styled.div`
+  position: relative;
+`;
+
 const Search = styled.input`
   height: 50px;
   width: 300px;
@@ -136,6 +142,8 @@ const Search = styled.input`
   border-radius: 35px;
   padding: 10px 20px;
   outline: none;
+  border: 1px solid #7e7e7e;
+  margin-bottom: 2rem;
   font-size: ${theme.font.medium};
   ${(props) => props.disabled && 'background: none'};
   background: transparent;
@@ -143,6 +151,19 @@ const Search = styled.input`
   ${deviceMedia[deviceSizes.phone]`
     max-width: 200px;
   `};
+`;
+
+const SearchResult = styled.div`
+  position: absolute;
+  left: 0;
+  top: 50px;
+  width: 100%;
+  height: 200px;
+  overflow: scroll;
+  z-index: 10;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 24px 0 rgb(0 0 0 / 8%);
 `;
 
 const PageHome = ({
@@ -155,10 +176,12 @@ const PageHome = ({
   isLoading,
   error,
 }) => {
+  const searchRef = useRef();
   const router = useRouter();
   const { data: items, maxPage } = useSelector((state) => state.items);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [isLoadingSearch, setIsLoadingSearch] = useState(true);
+  const [showResult, setShowResult] = useState(false);
   // console.log(items);
 
   const [itemsSearch, setItemsSearch] = useState([]);
@@ -284,6 +307,12 @@ const PageHome = ({
     router.push(router);
   };
 
+  const onClickOutside = () => {
+    setShowResult(false);
+  };
+
+  useClickOutside(searchRef, onClickOutside);
+
   useEffect(() => {
     if (searchQuery) {
       const fetchingItemsByQuery = async () => {
@@ -383,7 +412,45 @@ const PageHome = ({
           </MobileFilters>
         </MobileFiltersContainer>
         <Filters>
-          <Filter>
+          <SearchWrapper>
+            <Search
+              ref={searchRef}
+              placeholder={'Recherche...'}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onFocus={() => {
+                setShowResult(true);
+              }}
+              onBlur={() => {
+                setShowMobileFilters(false);
+              }}
+            />
+
+            {showResult && searchQuery && (
+              <SearchResult>
+                {itemsSearch?.map((itemSearched) => {
+                  return (
+                    <Link href={`/items/${itemSearched._id}`} key={`searched_${itemSearched._id}`}>
+                      <p style={{ padding: `10px 14px`, marginBottom: 0 }}>
+                        {itemSearched.reference} - {itemSearched.title}
+                      </p>
+                    </Link>
+                  );
+                })}
+
+                {isLoadingSearch && (
+                  <>
+                    <Spinner />
+                  </>
+                )}
+
+                {!isLoadingSearch && itemsSearch.length <= 0 && searchQuery && (
+                  <div style={{ padding: '0.5rem' }}>Aucun résultat</div>
+                )}
+              </SearchResult>
+            )}
+          </SearchWrapper>
+          {/* <Filter>
             <Dropdown
               toggle={
                 <Search
@@ -411,9 +478,8 @@ const PageHome = ({
               {!isLoadingSearch && itemsSearch.length <= 0 && searchQuery && (
                 <div style={{ padding: '0.5rem' }}>Aucun résultat</div>
               )}
-              {/* {itemsSearch?.length < 1 && search?.length > 0 && <Spinner />} */}
             </Dropdown>
-          </Filter>
+          </Filter> */}
           <Filter>
             <Dropdown value={'Catégories'}>
               {hack?.categories
