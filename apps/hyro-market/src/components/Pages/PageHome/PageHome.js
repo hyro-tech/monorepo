@@ -150,6 +150,7 @@ const Search = styled.input`
 
   ${deviceMedia[deviceSizes.phone]`
     max-width: 200px;
+    margin-bottom: 0rem;
   `};
 `;
 

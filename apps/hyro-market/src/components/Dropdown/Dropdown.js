@@ -2,8 +2,8 @@ import React, { forwardRef } from 'react';
 import BootstrapDropdown from 'react-bootstrap/Dropdown';
 import styled from 'styled-components';
 import Image from 'react-bootstrap/Image';
-
 import theme, { colors } from '../../styles/theme';
+import { deviceMedia, deviceSizes } from '../../styles/helper';
 
 const StyledBootstrapDropdown = styled(BootstrapDropdown)``;
 
@@ -64,8 +64,13 @@ const Toggle = styled.div`
   height: 50px;
   cursor: ${(props) => (props.selectable && !props.disabled ? 'pointer' : 'default')};
   color: ${(props) => props.disabled && theme.colors.gray};
-  border: 1px solid ${theme.colors.gray};
   border-radius: 35px;
+  border: 1px solid ${theme.colors.gray};
+
+  ${deviceMedia[deviceSizes.phone]`
+    border: none;
+    padding: 0;
+  `};
 `;
 
 const CustomToggle = forwardRef(({ children, selectable, small, disabled, onClick }, ref) => (
@@ -123,7 +128,7 @@ const Dropdown = ({ toggle, value, small, disabled, children }) => {
         <MenuWrapper hidden={!React.Children?.toArray(children)?.length}>
           <BootstrapDropdown.Menu as={CustomMenu} small={small} value={value}>
             <ul className="list-unstyled">
-              {/* <div className="mt-2" /> */}
+              <div className="mt-2" />
               {React.Children?.toArray(children)?.map((child, index) => (
                 <BootstrapDropdown.Item eventKey={index} active={child === value} key={index}>
                   {child}
